@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard – HerGuardian</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@400;500;700&display=swap');
+
+  :root {
+    --bg:            #ffffff;
+    --bg2:           #faf7ff;
+    --bg3:           #f3eeff;
+    --bg4:           #ede4ff;
+    --card:          #ffffff;
+    --surface:       #f8f4ff;
+    --purple:        #6B21A8;
+    --purple2:       #7C3AED;
+    --purple3:       #A855F7;
+    --purple-light:  #f3eeff;
+
+    --pink:          #EC4899;
+    --pink2:         #db2777;
+    --pink-light:    #fdf2f8;
+
+    --text:          #1a0a2e;
+    --text2:         #4a3860;
+    --text3:         #7c6a92;
+
+    --accent:        #6B21A8;
+    --accent2:       #7C3AED;
+    --accent3:       #A855F7;
+
+    --border:        rgba(107,33,168,0.10);
+    --border2:       rgba(107,33,168,0.22);
+    --border3:       rgba(236,72,153,0.20);
+
+    --nav-bg:        rgba(255,255,255,0.92);
+
+    --danger:        #e84646;
+    --danger2:       #ff6b6b;
+    --success:       #3aaa74;
+    --success2:      #5ec48e;
+    --warning:       #f5a623;
+    --sos:           #e84646;
+    --sos-hover:     #cc3333;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; }
+
+  nav {
+    position:fixed; top:0; left:0; right:0; z-index:1000;
+    background:rgba(0,0,0,0.5); backdrop-filter:blur(8px);
+    border-bottom:1px solid rgba(255,255,255,0.2);
+    padding:0 2rem; height:64px; display:flex; align-items:center; justify-content:space-between;
+  }	nav.scrolled {
+	    background: rgba(255,255,255,0.98);
+	    box-shadow: 0 2px 20px rgba(107,33,168,0.08);
+	    color: black;
+	}
+
+	nav.scrolled .nav-links a {
+	    color: black;
+	}
+	nav.scrolled .logout-btn {
+		color:#2E003E;
+		border:1px solid #2E003E;
+	}
+  .nav-logo { width:300px; height:300px; object-fit:contain; border-radius:6px; mix-blend-mode:normal; }
+  .nav-brand { display:flex; align-items:center; gap:10px; font-family:'Playfair Display',serif; font-size:1.2rem; color:var(--text); text-decoration:none; }
+  .nav-badge { background:rgba(232,70,70,0.15); border:1px solid rgba(232,70,70,0.3); color:var(--danger); font-size:0.7rem; padding:2px 8px; border-radius:10px; margin-left:6px; }
+  .nav-links { display:flex; gap:0.25rem; align-items:center; }
+  .nav-links a { color:white; font-size:0.82rem; padding:6px 13px; border-radius:6px; text-decoration:none; transition:all 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color:var(--purple); background:var(--purple-light); }
+  .nav-sos { background:var(--sos) !important; color:#fff !important; font-weight:700 !important; font-size:0.8rem !important; padding:7px 16px !important; border-radius:20px !important; margin-left:4px; animation:pulse-sos 2s infinite; border:none !important; }
+  @keyframes pulse-sos { 0%,100%{box-shadow:0 0 0 0 rgba(232,70,70,0.5)} 50%{box-shadow:0 0 0 8px rgba(232,70,70,0)} }
+  .logout-btn { background:none; border:1px solid white; color:white; font-size:0.8rem; padding:5px 12px; border-radius:8px; cursor:pointer; transition:all 0.2s; }
+  .logout-btn:hover { border-color:#2E003E; color:#2E003E; }
+
+  main { padding-top:64px; min-height:100vh; }
+
+  .admin-banner {
+    background:linear-gradient(135deg, var(--purple) 0%, var(--pink2) 100%);
+    padding:5rem 2rem 2rem; position:relative; overflow:hidden;
+    border-bottom:1px solid var(--border);
+  }
+  .admin-banner::before {
+    content:''; position:absolute; inset:0;
+    background-image:radial-gradient(circle at 1px 1px, rgba(255,255,255,0.08) 1px, transparent 0);
+    background-size:40px 40px;
+  }
+  .banner-content { max-width:1200px; margin:0 auto; position:relative; z-index:1; }
+  .banner-content h1 { font-family:'Playfair Display',serif; font-size:1.8rem; color:white; margin-bottom:0.4rem; }
+  .banner-content p { color:rgba(255,255,255,0.7); font-size:0.95rem; }
+
+  .wrapper { max-width:1200px; margin:0 auto; padding:2rem; }
+
+  .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:2rem; }
+  @media(max-width:768px) { .stats-grid { grid-template-columns:repeat(2,1fr); } }
+  .stat-card {
+    background:var(--card); border:1px solid var(--border); border-radius:16px;
+    padding:1.5rem; text-align:center; transition:all 0.2s;
+    box-shadow:0 2px 8px rgba(107,33,168,0.06);
+  }
+  .stat-card:hover { border-color:var(--border2); transform:translateY(-2px); box-shadow:0 8px 24px rgba(107,33,168,0.12); }
+  .stat-icon { font-size:2rem; margin-bottom:0.75rem; }
+  .stat-num { font-family:'Playfair Display',serif; font-size:2.5rem; font-weight:700; background:linear-gradient(135deg, var(--purple), var(--pink)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .stat-label { font-size:0.72rem; color:var(--text3); text-transform:uppercase; letter-spacing:0.08em; margin-top:4px; }
+
+  .tabs { display:flex; gap:0.5rem; margin-bottom:1.5rem; flex-wrap:wrap; border-bottom:1px solid var(--border); padding-bottom:1rem; }
+  .tab {
+    background:none; border:1px solid var(--border); border-radius:20px;
+    padding:8px 18px; font-size:0.82rem; color:var(--text2); cursor:pointer;
+    transition:all 0.2s; font-family:'DM Sans',sans-serif;
+  }
+  .tab:hover { border-color:var(--border2); color:var(--purple); }
+  .tab.active { background:var(--purple-light); border-color:var(--purple); color:var(--purple); }
+
+  .table-card {
+    background:var(--card); border:1px solid var(--border); border-radius:16px;
+    overflow:hidden; margin-bottom:1.5rem;
+    box-shadow:0 2px 8px rgba(107,33,168,0.06);
+  }
+  .table-header {
+    padding:1.25rem 1.5rem; border-bottom:1px solid var(--border);
+    display:flex; justify-content:space-between; align-items:center;
+    background:var(--surface);
+  }
+  .table-header h3 { font-size:1rem; color:var(--text); font-weight:600; }
+  .table-count { font-size:0.78rem; color:var(--text3); background:var(--bg2); padding:3px 10px; border-radius:20px; }
+  .table-wrap { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; }
+  th {
+    padding:0.75rem 1rem; font-size:0.75rem; text-transform:uppercase;
+    letter-spacing:0.06em; color:var(--text3); text-align:left;
+    border-bottom:1px solid var(--border); background:var(--bg);
+  }
+  td { padding:0.85rem 1rem; font-size:0.88rem; color:var(--text2); border-bottom:1px solid var(--border); }
+  tr:last-child td { border-bottom:none; }
+  tr:hover td { background:var(--surface); }
+  .td-name { color:var(--text); font-weight:600; }
+  .td-id { color:var(--purple); font-weight:600; font-size:0.82rem; }
+
+  .badge { font-size:0.72rem; font-weight:600; padding:3px 10px; border-radius:20px; white-space:nowrap; }
+  .badge-pending  { background:rgba(245,166,35,0.12);  color:var(--warning); }
+  .badge-resolved { background:rgba(58,170,116,0.12); color:var(--success); }
+  .badge-active   { background:rgba(232,70,70,0.12);  color:var(--danger); }
+  .badge-completed{ background:rgba(58,170,116,0.12); color:var(--success); }
+  .badge-ongoing  { background:rgba(107,33,168,0.12);  color:var(--purple); }
+
+  .status-select {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:8px; padding:4px 8px; color:var(--text2);
+    font-family:'DM Sans',sans-serif; font-size:0.78rem; cursor:pointer; outline:none;
+  }
+  .status-select:focus { border-color:var(--purple); }
+
+  .loading { text-align:center; padding:2.5rem; color:var(--text3); }
+  .spinner {
+    width:32px; height:32px; border:3px solid var(--border);
+    border-top-color:var(--purple); border-radius:50%;
+    animation:spin 0.8s linear infinite; margin:0 auto 0.75rem;
+  }
+  @keyframes spin { to{transform:rotate(360deg)} }
+
+ 
+  .empty { text-align:center; padding:2rem; color:var(--text3); font-size:0.88rem; }
+
+
+  .section { display:none; }
+  .section.active { display:block; }
+
+ 
+  .alert { padding:10px 14px; border-radius:8px; font-size:0.85rem; margin-bottom:1rem; display:none; }
+  .alert-success { background:rgba(58,170,116,0.12); border:1px solid rgba(58,170,116,0.3); color:var(--success); }
+
+  .section-label {
+    font-size:0.75rem; text-transform:uppercase; letter-spacing:0.1em;
+    color:var(--text3); margin-bottom:1rem;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html">
+      <img class="nav-logo" src="/images/HerGuardian_logo_transparent.png" alt="HerGuardian Logo">
+	  <span class="nav-badge">ADMIN</span>
+    </a>
+  <div class="nav-links">
+    <a href="admin-dashboard.html" class="active">📊 Admin Panel</a>
+    <a href="dashboard.html">User View</a>
+  </div>
+  <button class="logout-btn" onclick="logout()">Logout</button>
+</nav>
+
+<div class="admin-banner">
+  <div class="banner-content">
+    <h1>⚙️ Admin Dashboard</h1>
+    <p>Manage users, complaints, SOS alerts and walk history — HerGuardian Control Panel</p>
+  </div>
+</div>
+
+<main>
+  <div class="wrapper">
+
+    <div class="alert alert-success" id="success-msg"></div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-num" id="total-users">0</div>
+        <div class="stat-label">Total Users</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🚶‍♀️</div>
+        <div class="stat-num" id="total-walks">0</div>
+        <div class="stat-label">Total Walks</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🚨</div>
+        <div class="stat-num" style="color:var(--danger)" id="total-sos">0</div>
+        <div class="stat-label">SOS Alerts</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📝</div>
+        <div class="stat-num" id="total-complaints">0</div>
+        <div class="stat-label">Complaints</div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="showSection('users', this)">👥 Users</button>
+      <button class="tab" onclick="showSection('complaints', this)">📝 Complaints</button>
+      <button class="tab" onclick="showSection('sos', this)">🚨 SOS Alerts</button>
+      <button class="tab" onclick="showSection('walks', this)">🚶‍♀️ Walk History</button>
+    </div>
+
+    <div class="section active" id="section-users">
+      <div class="table-card">
+        <div class="table-header">
+          <h3>👥 Registered Users</h3>
+          <span class="table-count" id="users-count">Loading...</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>Registered</th>
+              </tr>
+            </thead>
+            <tbody id="users-tbody">
+              <tr><td colspan="6"><div class="loading"><div class="spinner"></div>Loading users...</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="section" id="section-complaints">
+      <div class="table-card">
+        <div class="table-header">
+          <h3>📝 All Complaints</h3>
+          <span class="table-count" id="complaints-count">Loading...</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>User ID</th>
+                <th>Type</th>
+                <th>Location</th>
+                <th>Description</th>
+                <th>Filed At</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="complaints-tbody">
+              <tr><td colspan="7"><div class="loading"><div class="spinner"></div>Loading complaints...</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="section-sos">
+      <div class="table-card">
+        <div class="table-header">
+          <h3>🚨 SOS Alerts</h3>
+          <span class="table-count" id="sos-count">Loading...</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>User ID</th>
+                <th>Triggered At</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="sos-tbody">
+              <tr><td colspan="6"><div class="loading"><div class="spinner"></div>Loading SOS alerts...</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="section-walks">
+      <div class="table-card">
+        <div class="table-header">
+          <h3>🚶‍♀️ Walk History</h3>
+          <span class="table-count" id="walks-count">Loading...</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>User ID</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="walks-tbody">
+              <tr><td colspan="7"><div class="loading"><div class="spinner"></div>Loading walks...</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+function showSection(name, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('section-' + name).classList.add('active');
+  el.classList.add('active');
+}
+
+function showAlert(msg) {
+  const el = document.getElementById('success-msg');
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 3000);
+}
+
+function formatDate(dt) {
+  if (!dt) return '—';
+  return new Date(dt).toLocaleString('en-IN');
+}
+
+function loadStats() {
+  fetch('/api/admin/stats')
+    .then(r => r.json())
+    .then(d => {
+      document.getElementById('total-users').textContent      = d.totalUsers      || 0;
+      document.getElementById('total-walks').textContent      = d.totalWalks      || 0;
+      document.getElementById('total-sos').textContent        = d.totalSos        || 0;
+      document.getElementById('total-complaints').textContent = d.totalComplaints || 0;
+    }).catch(() => {});
+}
+
+function loadUsers() {
+  fetch('/api/admin/users')
+    .then(r => r.json())
+    .then(users => {
+      document.getElementById('users-count').textContent = `${users.length} users`;
+      if (!users.length) {
+        document.getElementById('users-tbody').innerHTML = '<tr><td colspan="6"><div class="empty">No users found.</div></td></tr>';
+        return;
+      }
+      document.getElementById('users-tbody').innerHTML = users.map((u, i) => `
+        <tr>
+          <td class="td-id">#${i + 1}</td>
+          <td class="td-name">${u.fullName || '—'}</td>
+          <td>${u.email || '—'}</td>
+          <td>${u.phone || '—'}</td>
+          <td>${u.address || '—'}</td>
+          <td>${formatDate(u.createdAt)}</td>
+        </tr>
+      `).join('');
+    }).catch(() => {
+      document.getElementById('users-tbody').innerHTML = '<tr><td colspan="6"><div class="empty">Failed to load users.</div></td></tr>';
+    });
+}
+
+function loadComplaints() {
+  fetch('/api/admin/complaints')
+    .then(r => r.json())
+    .then(complaints => {
+      document.getElementById('complaints-count').textContent = `${complaints.length} complaints`;
+      if (!complaints.length) {
+        document.getElementById('complaints-tbody').innerHTML = '<tr><td colspan="7"><div class="empty">No complaints found.</div></td></tr>';
+        return;
+      }
+      document.getElementById('complaints-tbody').innerHTML = complaints.map((c, i) => `
+        <tr>
+          <td class="td-id">#${i + 1}</td>
+          <td class="td-id">${c.userId || '—'}</td>
+          <td><span class="badge badge-active">${c.incidentType || '—'}</span></td>
+          <td>${c.location || '—'}</td>
+          <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.description || '—'}</td>
+          <td>${formatDate(c.filedAt)}</td>
+          <td>
+            <select class="status-select" onchange="updateComplaintStatus(${c.id}, this.value)">
+              <option value="pending"  ${c.status === 'pending'  ? 'selected' : ''}>⏳ Pending</option>
+              <option value="resolved" ${c.status === 'resolved' ? 'selected' : ''}>✅ Resolved</option>
+            </select>
+          </td>
+        </tr>
+      `).join('');
+    }).catch(() => {
+      document.getElementById('complaints-tbody').innerHTML = '<tr><td colspan="7"><div class="empty">Failed to load complaints.</div></td></tr>';
+    });
+}
+
+function updateComplaintStatus(id, status) {
+  fetch(`/api/admin/complaints/${id}/status?status=${status}`, { method: 'PUT' })
+    .then(r => r.json())
+    .then(d => {
+      if (d.success) showAlert(`✅ Complaint #${id} status updated to "${status}"!`);
+    }).catch(() => {});
+}
+
+function loadSos() {
+  fetch('/api/admin/sos')
+    .then(r => r.json())
+    .then(sos => {
+      document.getElementById('sos-count').textContent = `${sos.length} alerts`;
+      if (!sos.length) {
+        document.getElementById('sos-tbody').innerHTML = '<tr><td colspan="6"><div class="empty">No SOS alerts found.</div></td></tr>';
+        return;
+      }
+      document.getElementById('sos-tbody').innerHTML = sos.map((s, i) => `
+        <tr>
+          <td class="td-id">#${i + 1}</td>
+          <td class="td-id">${s.userId || '—'}</td>
+          <td>${formatDate(s.triggeredAt)}</td>
+          <td>${s.latitude  || '—'}</td>
+          <td>${s.longitude || '—'}</td>
+          <td><span class="badge ${s.status === 'resolved' ? 'badge-resolved' : 'badge-active'}">${s.status === 'resolved' ? '✅ Resolved' : '🚨 Active'}</span></td>
+        </tr>
+      `).join('');
+    }).catch(() => {
+      document.getElementById('sos-tbody').innerHTML = '<tr><td colspan="6"><div class="empty">Failed to load SOS alerts.</div></td></tr>';
+    });
+}
+
+function loadWalks() {
+  fetch('/api/admin/walks')
+    .then(r => r.json())
+    .then(walks => {
+      document.getElementById('walks-count').textContent = `${walks.length} walks`;
+      if (!walks.length) {
+        document.getElementById('walks-tbody').innerHTML = '<tr><td colspan="7"><div class="empty">No walks found.</div></td></tr>';
+        return;
+      }
+      document.getElementById('walks-tbody').innerHTML = walks.map((w, i) => `
+        <tr>
+          <td class="td-id">#${i + 1}</td>
+          <td class="td-id">${w.userId || '—'}</td>
+          <td>${w.startLocation || '—'}</td>
+          <td>${w.destination  || '—'}</td>
+          <td>${formatDate(w.startTime)}</td>
+          <td>${formatDate(w.endTime)}</td>
+          <td><span class="badge ${w.status === 'completed' ? 'badge-completed' : w.status === 'ongoing' ? 'badge-ongoing' : 'badge-active'}">${w.status || '—'}</span></td>
+        </tr>
+      `).join('');
+    }).catch(() => {
+      document.getElementById('walks-tbody').innerHTML = '<tr><td colspan="7"><div class="empty">Failed to load walks.</div></td></tr>';
+    });
+}
+
+function logout() {
+  sessionStorage.clear();
+  window.location.href = 'login.html';
+}
+
+loadStats();
+loadUsers();
+loadComplaints();
+loadSos();
+loadWalks();
+</script>
+
+<script src="nav.js"></script>
+</body>
+</html>

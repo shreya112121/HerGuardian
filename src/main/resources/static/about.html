@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About – HerGuardian</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@400;500;700&display=swap');
+
+  :root {
+    --bg:            #ffffff;
+    --bg2:           #faf7ff;
+    --bg3:           #f3eeff;
+    --surface:       #f8f4ff;
+    --card:          #ffffff;
+    --purple:        #6B21A8;
+    --purple2:       #7C3AED;
+    --purple3:       #A855F7;
+    --purple-light:  #f3eeff;
+
+    --pink:          #EC4899;
+    --pink2:         #db2777;
+    --pink-light:    #fdf2f8;
+    
+    --text:          #1a0a2e;
+    --text2:         #4a3860;
+    --text3:         #7c6a92;
+
+    --accent:        #6B21A8;
+    --accent2:       #7C3AED;
+    --accent3:       #A855F7;
+
+    --border:        rgba(107,33,168,0.10);
+    --border2:       rgba(107,33,168,0.22);
+    --border3:       rgba(236,72,153,0.20);
+
+    --nav-bg:        rgba(255,255,255,0.92);
+
+    --danger:        #e84646;
+    --danger2:       #ff6b6b;
+    --success:       #3aaa74;
+    --success2:      #5ec48e;
+    --warning:       #f5a623;
+    --sos:           #e84646;
+    --sos-hover:     #cc3333;
+
+    --gold:          #6B21A8;
+    --gold2:         #7C3AED;
+    --gold3:         #A855F7;
+    --navy:          #1a0a2e;
+    --navy2:         #faf7ff;
+    --navy3:         #f3eeff;
+    --navy4:         #f8f4ff;
+    --teal:          #3aaa74;
+    --rose:          #e84646;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; }
+
+  nav { position:fixed; 
+	top:0; left:0; right:0; z-index:1000;
+	 background:rgba(0,0,0,0.5); 
+	 backdrop-filter:blur(8px); 
+	 border-bottom:1px solid rgba(255,255,255,0.2); 
+	 padding:0 2rem; height:64px; display:flex; 
+	 align-items:center;
+	  justify-content:space-between; }
+	  nav.scrolled {
+	    background: rgba(255,255,255,0.98);
+	    box-shadow: 0 2px 20px rgba(107,33,168,0.08);
+	  }
+  .nav-brand { display:flex; align-items:center; gap:10px; font-family:'Playfair Display',serif; font-size:1.2rem; color:var(--text); text-decoration:none; }
+  .nav-links { display:flex; align-items:center; gap:4px; }
+  .nav-links a { color:black; font-size:0.82rem; padding:6px 13px; border-radius:6px; text-decoration:none; transition:all 0.2s; }
+  .nav-links a:hover { color:var(--purple); background:var(--purple-light); }
+  .nav-login { color:#2E003E !important; border:1px solid #2E003E !important; border-radius:20px !important; padding:5px 16px !important; }
+  .nav-login:hover { background:var(--purple-light) !important; }
+  .nav-register { background:linear-gradient(135deg, var(--purple) 0%, var(--pink) 100%) !important; color:#fff !important; font-weight:600 !important; border-radius:20px !important; padding:5px 16px !important; border:none !important; transition:opacity 0.2s, transform 0.2s !important; }
+  .nav-register:hover { opacity:0.88; transform:translateY(-1px); }
+  .nav-avatar { width:34px; height:34px; border-radius:50%; background:var(--purple-light); border:1.5px solid var(--border2); display:flex; align-items:center; justify-content:center; color:var(--purple); font-size:1rem; text-decoration:none; margin:0 2px; transition:all 0.2s; }
+  .nav-avatar:hover { background:var(--bg3); }
+  .nav-sos { background:var(--sos); color:#fff !important; font-weight:700 !important; font-size:0.8rem !important; padding:7px 16px !important; border-radius:20px !important; margin-left:4px; animation:pulse-sos 2s infinite; border:none !important; }
+  @keyframes pulse-sos { 0%,100%{ box-shadow:0 0 0 0 rgba(232,70,70,0.5); } 50%{ box-shadow:0 0 0 8px rgba(232,70,70,0); } }
+  .nav-logged-in { display:none; }
+  .nav-logged-out { display:contents; }
+  .nav-logo { width:300px; height:300px; object-fit:contain; border-radius:6px; mix-blend-mode:normal; }
+
+  main { padding-top:64px; min-height:100vh; }
+  .page-wrapper { max-width:800px; margin:0 auto; padding:2.5rem 2rem; }
+
+  .about-hero { text-align:center; margin-bottom:3rem; animation:fadeUp 0.6s ease; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+  .about-hero img { width:100%; height:280px; object-fit:cover; border-radius:20px; margin-bottom:2rem; filter:brightness(0.9); border:1px solid var(--border); }
+  .about-hero .shield { font-size:4rem; display:block; margin-bottom:1rem; }
+  .about-hero h1 { font-family:'Playfair Display',serif; font-size:2.5rem; color:var(--text); margin-bottom:1rem; }
+  .about-hero p { color:var(--text2); font-size:1rem; line-height:1.7; max-width:500px; margin:0 auto; }
+
+  .about-section { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:2rem; margin-bottom:1.5rem; animation:fadeUp 0.6s ease; box-shadow:0 2px 12px rgba(107,33,168,0.06); }
+  .about-section h2 { font-family:'Playfair Display',serif; font-size:1.4rem; color:var(--purple); margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem; }
+  .about-section h2::after { content:''; flex:1; height:1px; background:var(--border); }
+  .about-section p { color:var(--text2); font-size:0.92rem; line-height:1.8; margin-bottom:0.75rem; }
+  .about-section p:last-child { margin-bottom:0; }
+  .about-section ul { list-style:none; color:var(--text2); font-size:0.92rem; line-height:1.8; }
+  .about-section ul li { padding:0.5rem 0; border-bottom:1px solid var(--border); display:flex; align-items:flex-start; gap:0.75rem; }
+  .about-section ul li:last-child { border-bottom:none; }
+  .about-section ul li::before { content:'✅'; flex-shrink:0; }
+
+  .emergency-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1rem; margin-top:1rem; }
+  .emergency-box { background:rgba(232,70,70,0.06); border:1px solid rgba(232,70,70,0.2); border-radius:12px; padding:1.25rem; text-align:center; transition:all 0.2s; text-decoration:none; display:block; }
+  .emergency-box:hover { background:rgba(232,70,70,0.12); transform:translateY(-2px); }
+  .emergency-num { font-family:'Playfair Display',serif; font-size:2rem; color:var(--danger); font-weight:700; }
+  .emergency-lbl { color:var(--text3); font-size:0.8rem; margin-top:6px; }
+
+  .features-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1rem; margin-top:1rem; }
+  .feature-box { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1.25rem; text-align:center; }
+  .feature-box .icon { font-size:2rem; margin-bottom:0.75rem; }
+  .feature-box h3 { font-size:0.95rem; color:var(--text); margin-bottom:0.4rem; }
+  .feature-box p { font-size:0.82rem; color:var(--text3); line-height:1.5; }
+
+  .cta-section { text-align:center; padding:3rem 2rem; background:var(--surface); border:1px solid var(--border2); border-radius:20px; margin-top:2rem; }
+  .cta-section h2 { font-family:'Playfair Display',serif; font-size:1.8rem; color:var(--text); margin-bottom:0.75rem; }
+  .cta-section p { color:var(--text2); font-size:0.92rem; margin-bottom:1.5rem; }
+  .btn-cta { background:linear-gradient(135deg, var(--purple) 0%, var(--pink) 100%); color:#fff; border:none; font-family:'DM Sans',sans-serif; font-weight:700; font-size:1rem; padding:13px 32px; border-radius:30px; cursor:pointer; transition:all 0.2s; text-decoration:none; display:inline-block; margin:0.4rem; }
+  .btn-cta:hover { opacity:0.88; transform:translateY(-2px); box-shadow:0 8px 24px rgba(107,33,168,0.25); }
+  .btn-outline { background:transparent; color:var(--purple); border:1.5px solid var(--border2); font-family:'DM Sans',sans-serif; font-weight:500; font-size:1rem; padding:12px 28px; border-radius:30px; cursor:pointer; transition:all 0.2s; text-decoration:none; display:inline-block; margin:0.4rem; }
+  .btn-outline:hover { background:var(--purple-light); transform:translateY(-2px); }
+
+  footer { background:var(--text); border-top:1px solid var(--border); padding:4rem 2rem 2rem; margin-top:3rem; }
+  .footer-hero-strip { height:180px; overflow:hidden; position:relative; border-radius:16px; max-width:1100px; margin:0 auto 3rem; }
+  .footer-hero-strip img { width:100%; height:100%; object-fit:cover; filter:brightness(0.5); }
+  .footer-hero-strip-overlay { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:1rem; }
+  .footer-hero-strip-overlay h3 { font-family:'Playfair Display',serif; font-size:1.6rem; color:white; margin-bottom:0.5rem; }
+  .footer-hero-strip-overlay p { color:rgba(255,255,255,0.7); font-size:0.9rem; }
+  .footer-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:2.5rem; max-width:1100px; margin:0 auto 3rem; }
+  .footer-brand-name { font-family:'Playfair Display',serif; font-size:1.4rem; color:#fff; margin-bottom:0.75rem; display:flex; align-items:center; gap:8px; }
+  .footer-brand p { color:rgba(255,255,255,0.55); font-size:0.9rem; line-height:1.7; }
+  .footer-badges { margin-top:1rem; display:flex; gap:0.75rem; flex-wrap:wrap; }
+  .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.75rem; font-weight:600; }
+  .badge-gold { background:rgba(168,85,247,0.15); color:#c084fc; }
+  .badge-teal { background:rgba(58,170,116,0.15); color:var(--success2); }
+  .footer-col h4 { font-size:0.8rem; text-transform:uppercase; letter-spacing:0.1em; color:#fff; margin-bottom:1rem; }
+  .footer-col a { display:block; color:rgba(255,255,255,0.50); font-size:0.9rem; text-decoration:none; margin-bottom:0.5rem; transition:color 0.2s; }
+  .footer-col a:hover { color:var(--pink2); }
+  .footer-emergency { background:rgba(232,70,70,0.08); border:1px solid rgba(232,70,70,0.25); border-radius:12px; padding:1rem 1.25rem; }
+  .footer-emergency h4 { color:var(--danger); font-size:0.8rem; margin-bottom:0.5rem; letter-spacing:0.05em; }
+  .footer-emergency .num { font-family:'Playfair Display',serif; font-size:1.5rem; color:var(--danger); font-weight:700; }
+  .footer-emergency p { color:rgba(255,255,255,0.45); font-size:0.8rem; margin-top:4px; }
+  .footer-bottom { border-top:1px solid rgba(255,255,255,0.10); padding-top:1.5rem; max-width:1100px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+  .footer-bottom p { color:rgba(255,255,255,0.40); font-size:0.85rem; }
+  .footer-bottom .heart { color:var(--danger); }
+  .footer-badge { background:rgba(168,85,247,0.10); border:1px solid rgba(168,85,247,0.20); border-radius:20px; padding:4px 14px; font-size:0.78rem; color:#c084fc; }
+  .footer-logo { width:80px; height:80px; object-fit:contain; border-radius:6px; mix-blend-mode:normal; }
+
+</style>
+</head>
+<body>
+
+<nav>
+	<a class="nav-brand" href="index.html">
+	   <img class="nav-logo" src="/images/HerGuardian_logo_transparent.png" alt="HerGuardian Logo">
+	 </a>
+  <div class="nav-links">
+    <a href="nearby.html">Nearby Help</a>
+    <a href="sos.html" class="nav-sos">🚨 SOS</a>
+    <span class="nav-logged-out">
+      <a href="about.html" class="active">About</a>
+      <a href="login.html" class="nav-login">Login</a>
+      <a href="register.html" class="nav-register">Register</a>
+    </span>
+    <span class="nav-logged-in">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="start-walk.html">Start Walk</a>
+      <a href="profile.html" class="nav-avatar" title="Profile">👤</a>
+      <a href="#" class="nav-login" id="nav-logout-btn">Logout</a>
+    </span>
+  </div>
+</nav>
+
+<main>
+  <div class="page-wrapper">
+    <div class="about-hero">
+      <img src="/images/about.jpg.jpeg" alt="Women walking safely at night">
+      <span class="shield"><img src="/images/HerGuardian_logo_final.png" alt="logo" style="width:100px;height:100px;object-fit:contain;vertical-align:middle;margin-right:4px;"></span>
+      <h1>About  HerGuardian</h1>
+      <p>Empowering women to walk fearlessly at night with technology as their silent guardian.</p>
+    </div>
+
+    <div class="about-section">
+      <h2>🎯 Our Mission</h2>
+      <p> HerGuardian was built with one goal: <strong style="color:var(--gold)">every woman should feel safe walking alone at night & anytime.</strong></p>
+      <p>We combine real-time GPS tracking, intelligent check-in systems, and instant emergency response into one seamless digital safety companion.</p>
+      <p>No app should replace personal safety awareness, but we can be the safety net that's always there when you need it most.</p>
+    </div>
+
+    <div class="about-section">
+      <h2>⚙️ How It Works</h2>
+      <ul>
+        <li>Register and add your trusted emergency contacts</li>
+        <li>Start a walk session with your destination and expected arrival time</li>
+        <li>Our system tracks your live GPS location throughout the journey</li>
+        <li>Regular check-in prompts verify you're safe every 10 minutes</li>
+        <li>One tap SOS button alerts all contacts with your exact location</li>
+        <li>Emergency contacts and nearby police receive your GPS coordinates instantly</li>
+        <li>Mark yourself safe when you arrive — or help arrives fast</li>
+      </ul>
+    </div>
+
+    <div class="about-section">
+      <h2>✨ Key Features</h2>
+      <div class="features-grid">
+        <div class="feature-box"><div class="icon">🚶‍♀️</div><h3>Safe Walk Tracking</h3><p>Track every walk with live GPS and timed check-ins</p></div>
+        <div class="feature-box"><div class="icon">🚨</div><h3>One-Tap SOS</h3><p>Instant emergency alert to all contacts with your location</p></div>
+        <div class="feature-box"><div class="icon">👥</div><h3>Emergency Contacts</h3><p>Add trusted people who will be notified in danger</p></div>
+        <div class="feature-box"><div class="icon">🏥</div><h3>Nearby Help</h3><p>Find police stations and hospitals near you instantly</p></div>
+        <div class="feature-box"><div class="icon">📞</div><h3>Fake Call</h3><p>Escape uncomfortable situations with a fake incoming call</p></div>
+        <div class="feature-box"><div class="icon">📝</div><h3>Complaint Filing</h3><p>Report incidents to help make your community safer</p></div>
+      </div>
+    </div>
+
+    <div class="about-section">
+      <h2>🚨 Emergency Numbers</h2>
+      <div class="emergency-grid">
+        <a class="emergency-box" href="tel:112"><div class="emergency-num">112</div><div class="emergency-lbl">Emergency Police</div></a>
+        <a class="emergency-box" href="tel:1091"><div class="emergency-num">1091</div><div class="emergency-lbl">Women Helpline</div></a>
+        <a class="emergency-box" href="tel:100"><div class="emergency-num">100</div><div class="emergency-lbl">Police Helpline</div></a>
+        <a class="emergency-box" href="tel:108"><div class="emergency-num">108</div><div class="emergency-lbl">Ambulance</div></a>
+        <a class="emergency-box" href="tel:101"><div class="emergency-num">101</div><div class="emergency-lbl">Fire Brigade</div></a>
+        <a class="emergency-box" href="tel:1098"><div class="emergency-num">1098</div><div class="emergency-lbl">Child Helpline</div></a>
+      </div>
+    </div>
+
+    <div class="about-section">
+      <h2>🔒 Privacy & Security</h2>
+      <p>Your safety and privacy are our top priority:</p>
+      <ul>
+        <li>All passwords are encrypted using BCrypt — never stored in plain text</li>
+        <li>Your location is only shared with your emergency contacts during SOS</li>
+        <li>No data is sold to third parties — ever</li>
+        <li>Your walk history is private and only visible to you</li>
+      </ul>
+    </div>
+
+    <div class="cta-section">
+      <h2>Walk Fearlessly Tonight 🌙</h2>
+      <p>Join Night Walk Guardian — your personal safety companion</p>
+      <a class="btn-cta" href="register.html">🛡️ Create Free Account</a>
+      <a class="btn-outline" href="index.html">🏠 Home</a>
+    </div>
+  </div>
+</main>
+
+
+<footer>
+  <div class="footer-hero-strip">
+    <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1400&q=80" alt="Women safety community">
+    <div class="footer-hero-strip-overlay">
+      <h3>Walk Safe. Walk Fearless.</h3>
+      <p>Emergency: <strong style="color:var(--gold)">112</strong> &nbsp;·&nbsp; Women Helpline: <strong style="color:var(--gold)">1091</strong></p>
+    </div>
+  </div>
+
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-brand-name">
+        <img class="footer-logo" src="/images/HerGuardian_logo_final.png" alt="Her Guardian Logo">
+      </div>
+      <p>Your digital safety companion for every night & day walk. Real-time tracking, smart check-ins, and instant emergency response — because every woman deserves to walk fearlessly.</p>
+      <div class="footer-badges">
+        <span class="badge badge-gold">🔐 Encrypted</span>
+        <span class="badge badge-teal">📡 Real-time GPS</span>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Safety Features</h4>
+      <a href="start-walk.html">🚶‍♀️ Start Safe Walk</a>
+      <a href="tracking.html">📍 Live Tracking</a>
+      <a href="sos.html">🚨 Emergency SOS</a>
+      <a href="nearby.html">🏥 Nearby Help</a>
+	  <a href="about.html">ℹ️ About</a>
+    </div>
+
+    <div class="footer-col">
+      <h4>My Account</h4>
+      <a href="dashboard.html">📊 Dashboard</a>
+      <a href="contacts.html">👥 My Contacts</a>
+      <a href="walk-history.html">📄 Walk History</a>
+      <a href="Complaint.html">📝 File Report</a>
+      <a href="profile.html">👤 My Profile</a>
+    </div>
+
+    <div class="footer-col">
+      <h4>Emergency</h4>
+      <div class="footer-emergency">
+        <h4>🚨 WOMEN HELPLINE</h4>
+        <div class="num">1091</div>
+        <p>24/7 · Free · Confidential</p>
+      </div>
+      <div class="footer-emergency" style="margin-top:0.75rem;">
+        <h4>🚔 EMERGENCY</h4>
+        <div class="num">112</div>
+        <p>Police · Ambulance · Fire</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>© 2026 HerGuardian · Built with <span class="heart">♥</span> for women's safety ·</p>
+    <div class="footer-badge"><img src="/images/HerGuardian_logo_final.png" alt="logo" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:4px;"> Trusted Safety Platform</div>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    const token = localStorage.getItem('token');
+    const loggedIn  = document.querySelectorAll('.nav-logged-in');
+    const loggedOut = document.querySelectorAll('.nav-logged-out');
+    if (token) {
+      loggedIn.forEach(el  => el.style.display = 'contents');
+      loggedOut.forEach(el => el.style.display = 'none');
+    } else {
+      loggedIn.forEach(el  => el.style.display = 'none');
+      loggedOut.forEach(el => el.style.display = 'contents');
+    }
+    const logoutBtn = document.getElementById('nav-logout-btn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = 'index.html';
+      });
+    }
+  })();
+</script>
+
+<script src="nav.js"></script>
+</body>
+</html>

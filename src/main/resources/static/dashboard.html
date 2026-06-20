@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard – HerGuardian</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@400;500;700&display=swap');
+
+  :root {
+    --bg:            #ffffff;
+    --bg2:           #faf7ff;
+    --bg3:           #f3eeff;
+    --bg4:           #ede8ff;
+    --surface:       #f8f4ff;
+    --card:          #ffffff;
+    --purple:        #6B21A8;
+    --purple2:       #7C3AED;
+    --purple3:       #A855F7;
+    --purple-light:  #f3eeff;
+
+    --pink:          #EC4899;
+    --pink2:         #db2777;
+    --pink-light:    #fdf2f8;
+
+    --text:          #1a0a2e;
+    --text2:         #4a3860;
+    --text3:         #7c6a92;
+
+    --accent:        #6B21A8;
+    --accent2:       #7C3AED;
+    --accent3:       #A855F7;
+
+    --border:        rgba(107,33,168,0.10);
+    --border2:       rgba(107,33,168,0.22);
+    --border3:       rgba(236,72,153,0.20);
+
+    --nav-bg:        rgba(255,255,255,0.92);
+
+    --danger:        #e84646;
+    --danger2:       #ff6b6b;
+    --success:       #3aaa74;
+    --success2:      #5ec48e;
+    --warning:       #f5a623;
+    --sos:           #e84646;
+    --sos-hover:     #cc3333;
+
+    --gold:          #6B21A8;
+    --gold2:         #7C3AED;
+    --gold3:         #A855F7;
+    --navy:          #1a0a2e;
+    --navy2:         #faf7ff;
+    --navy3:         #f3eeff;
+    --navy4:         #f8f4ff;
+    --teal:          #3aaa74;
+    --rose:          #e84646;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: rgba(0,0,0,0.3);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: 0.3s;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    padding: 0 2rem; height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  nav.scrolled {
+    background: rgba(255,255,255,0.98);
+    box-shadow: 0 2px 20px rgba(107,33,168,0.08);
+  }
+  .nav-brand { display:flex; align-items:center; gap:10px; font-family:'Playfair Display',serif; font-size:1.2rem; color:var(--purple); text-decoration:none; }
+  .nav-links { display:flex; align-items:center; gap:4px; flex-wrap:wrap; }
+  .nav-links a { color:black; font-size:0.82rem; padding:6px 13px; border-radius:6px; text-decoration:none; transition:all 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color:var(--purple); background:var(--purple-light); }
+  .nav-sos {
+    background:#e84646 !important;
+    color:#ffffff !important;
+    font-weight:700 !important;
+    font-size:0.85rem !important;
+    padding:7px 16px !important;
+    border-radius:25px !important;
+    border:none !important;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 8px 20px rgba(232,70,70,.35);
+    animation:pulse-sos 2s infinite;
+    transition:all .3s ease;
+  }
+  @keyframes pulse-sos { 0%,100%{ box-shadow:0 0 0 0 rgba(232,70,70,0.5); } 50%{ box-shadow:0 0 0 8px rgba(232,70,70,0); } }
+  .nav-logo { width:300px; height:300px; object-fit:contain; border-radius:6px; }
+  .logout-btn { background:none; border:1px solid #2E003E; color:#2E003E; font-size:0.8rem; padding:5px 12px; border-radius:8px; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
+  .logout-btn:hover { border-color:var(--danger); color:var(--danger); }
+
+  main { padding-top:64px; min-height:100vh; }
+
+  .stats-banner { background:linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%); border-bottom:1px solid var(--border); padding:2.5rem 2rem 2rem; position:relative; overflow:hidden; }
+  .stats-banner::before { content:''; position:absolute; inset:0; background-image:radial-gradient(circle at 1px 1px, rgba(107,33,168,0.06) 1px, transparent 0); background-size:40px 40px; }
+  .banner-content { max-width:1100px; margin:0 auto; position:relative; z-index:1; }
+  .banner-content h2 { font-family:'Playfair Display',serif; font-size:1.8rem; color:var(--text); margin-bottom:0.4rem; }
+  .banner-content p { color:var(--text2); font-size:0.95rem; }
+  .banner-time { color:var(--purple); font-size:0.85rem; margin-top:0.5rem; }
+
+  .dashboard-wrapper { max-width:1100px; margin:0 auto; padding:2rem; }
+
+  .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:2rem; }
+  @media(max-width:768px) { .stats-grid { grid-template-columns:repeat(2,1fr); } }
+  .stat-card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:1.5rem; text-align:center; transition:all 0.2s; }
+  .stat-card:hover { border-color:var(--border2); transform:translateY(-2px); }
+  .stat-icon { font-size:2rem; margin-bottom:0.75rem; }
+  .stat-num { font-family:'Playfair Display',serif; font-size:2rem; font-weight:700; color:var(--purple); }
+  .stat-label { font-size:0.72rem; color:var(--text3); letter-spacing:0.08em; text-transform:uppercase; margin-top:4px; }
+
+  .section-title { font-size:0.78rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text3); margin-bottom:1rem; }
+
+  .quick-actions { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:2rem; }
+  @media(max-width:768px) { .quick-actions { grid-template-columns:repeat(2,1fr); } }
+  @media(max-width:480px) { .quick-actions { grid-template-columns:1fr; } }
+  .action-btn { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:1.25rem 1rem; color:var(--text); font-family:'DM Sans',sans-serif; font-size:0.9rem; font-weight:500; cursor:pointer; transition:all 0.2s; text-align:center; text-decoration:none; display:block; }
+  .action-btn:hover { border-color:var(--border2); background:var(--surface); transform:translateY(-2px); }
+  .action-btn.gold   { border-color:var(--purple); color:var(--purple); }
+  .action-btn.gold:hover   { background:var(--purple-light); }
+  .action-btn.danger { border-color:var(--danger); color:var(--danger); }
+  .action-btn.danger:hover { background:rgba(232,70,70,0.06); }
+  .action-btn.teal   { border-color:var(--success); color:var(--success); }
+  .action-btn.teal:hover   { background:rgba(58,170,116,0.06); }
+  .action-icon { font-size:1.8rem; display:block; margin-bottom:0.5rem; }
+
+  .two-col { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:2rem; }
+  @media(max-width:768px) { .two-col { grid-template-columns:1fr; } }
+  .activity-card, .safety-card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:1.5rem; }
+  .activity-card h3, .safety-card h3 { font-size:1rem; color:var(--text); margin-bottom:1.25rem; }
+
+  .activity-item { display:flex; align-items:center; gap:1rem; padding:0.85rem 0; border-bottom:1px solid var(--border); }
+  .activity-item:last-child { border-bottom:none; padding-bottom:0; }
+  .activity-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+  .dot-green { background:var(--success); }
+  .dot-rose  { background:var(--danger); }
+  .dot-gold  { background:var(--purple); }
+  .activity-text { flex:1; }
+  .activity-title { font-size:0.88rem; color:var(--text); font-weight:500; }
+  .activity-time  { font-size:0.78rem; color:var(--text3); margin-top:2px; }
+  .activity-status { font-size:0.78rem; font-weight:600; padding:3px 10px; border-radius:20px; white-space:nowrap; }
+  .status-safe  { background:rgba(58,170,116,0.12); color:var(--success); }
+  .status-alert { background:rgba(232,70,70,0.10); color:var(--danger); }
+
+  .safety-status-item { display:flex; align-items:center; justify-content:space-between; padding:0.75rem 0; border-bottom:1px solid var(--border); }
+  .safety-status-item:last-child { border-bottom:none; }
+  .safety-label { font-size:0.88rem; color:var(--text2); display:flex; align-items:center; gap:0.5rem; }
+  .safety-badge { font-size:0.75rem; font-weight:600; padding:3px 10px; border-radius:20px; }
+  .badge-active { background:rgba(58,170,116,0.12); color:var(--success); }
+  .badge-off    { background:rgba(107,116,148,0.12); color:var(--text3); }
+  .badge-ready  { background:rgba(107,33,168,0.10); color:var(--purple); }
+
+  .emergency-strip { background:rgba(232,70,70,0.06); border:1px solid rgba(232,70,70,0.2); border-radius:14px; padding:1.25rem 1.5rem; margin-bottom:2rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; }
+  .emergency-strip p { color:var(--text2); font-size:0.88rem; }
+  .emergency-strip strong { color:var(--danger); }
+  .emergency-nums { display:flex; gap:1.5rem; flex-wrap:wrap; }
+  .emergency-num .num { font-family:'Playfair Display',serif; font-size:1.4rem; color:var(--danger); font-weight:700; }
+  .emergency-num .lbl { font-size:0.72rem; color:var(--text3); }
+
+  footer { background:var(--text); border-top:1px solid var(--border); padding:4rem 2rem 2rem; margin-top:0; }
+  .footer-hero-strip { height:180px; overflow:hidden; position:relative; border-radius:16px; max-width:1100px; margin:0 auto 3rem; }
+  .footer-hero-strip img { width:100%; height:100%; object-fit:cover; filter:brightness(0.5); }
+  .footer-hero-strip-overlay { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:1rem; }
+  .footer-hero-strip-overlay h3 { font-family:'Playfair Display',serif; font-size:1.6rem; color:white; margin-bottom:0.5rem; }
+  .footer-hero-strip-overlay p { color:rgba(255,255,255,0.7); font-size:0.9rem; }
+  .footer-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:2.5rem; max-width:1100px; margin:0 auto 3rem; }
+  .footer-brand-name { font-family:'Playfair Display',serif; font-size:1.4rem; color:#fff; margin-bottom:0.75rem; display:flex; align-items:center; gap:8px; }
+  .footer-logo { width:28px; height:28px; object-fit:contain; border-radius:4px; }
+  .footer-brand p { color:rgba(255,255,255,0.55); font-size:0.9rem; line-height:1.7; }
+  .footer-badges { margin-top:1rem; display:flex; gap:0.75rem; flex-wrap:wrap; }
+  .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.75rem; font-weight:600; }
+  .badge-gold { background:rgba(168,85,247,0.15); color:#c084fc; }
+  .badge-teal { background:rgba(58,170,116,0.15); color:var(--success2); }
+  .footer-col h4 { font-size:0.8rem; text-transform:uppercase; letter-spacing:0.1em; color:#fff; margin-bottom:1rem; }
+  .footer-col a { display:block; color:rgba(255,255,255,0.50); font-size:0.9rem; text-decoration:none; margin-bottom:0.5rem; cursor:pointer; transition:color 0.2s; }
+  .footer-col a:hover { color:var(--pink2); }
+  .footer-emergency { background:rgba(232,70,70,0.08); border:1px solid rgba(232,70,70,0.25); border-radius:12px; padding:1rem 1.25rem; }
+  .footer-emergency h4 { color:var(--danger); font-size:0.8rem; margin-bottom:0.5rem; letter-spacing:0.05em; }
+  .footer-emergency .num { font-family:'Playfair Display',serif; font-size:1.5rem; color:var(--danger); font-weight:700; }
+  .footer-emergency p { color:rgba(255,255,255,0.45); font-size:0.8rem; margin-top:4px; }
+  .footer-bottom { border-top:1px solid rgba(255,255,255,0.10); padding-top:1.5rem; max-width:1100px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+  .footer-bottom p { color:rgba(255,255,255,0.40); font-size:0.85rem; }
+  .footer-bottom .heart { color:var(--danger); }
+  .footer-badge { background:rgba(168,85,247,0.10); border:1px solid rgba(168,85,247,0.20); border-radius:20px; padding:4px 14px; font-size:0.78rem; color:#c084fc; }
+  .footer-logo { width:80px; height:80px; object-fit:contain; border-radius:6px; mix-blend-mode:normal; }
+
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html">
+    <img class="nav-logo" src="/images/HerGuardian_logo_transparent.png" alt="HerGuardian Logo">
+  </a>
+  <div class="nav-links">
+    <a href="dashboard.html" class="active">Dashboard</a>
+    <a href="start-walk.html">Start Walk</a>
+    <a href="tracking.html">Tracking</a>
+    <a href="contacts.html">Contacts</a>
+    <a href="walk-history.html">History</a>
+    <a href="nearby.html">Nearby</a>
+    <a href="complaint.html">Report</a>
+    <a href="profile.html">Profile</a>
+    <a href="sos.html" class="nav-sos">🚨 SOS</a>
+  </div>
+  <button class="logout-btn" onclick="logout()">Logout</button>
+</nav>
+
+<main>
+  <div class="stats-banner">
+    <div class="banner-content">
+      <h2 id="greeting">Good Evening 👋</h2>
+      <p>Stay safe tonight. Your guardian is active and watching over you.</p>
+      <div class="banner-time" id="current-time"></div>
+    </div>
+  </div>
+
+  <div class="dashboard-wrapper">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">🚶‍♀️</div>
+        <div class="stat-num" id="total-walks">0</div>
+        <div class="stat-label">Total Walks</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🚨</div>
+        <div class="stat-num" style="color:var(--danger)" id="sos-count">0</div>
+        <div class="stat-label">Emergency Alerts</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-num" style="color:var(--success)" id="safe-walks">0</div>
+        <div class="stat-label">Safe Trips</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-num" id="contacts-count">0</div>
+        <div class="stat-label">Emergency Contacts</div>
+      </div>
+    </div>
+
+    <div class="section-title">Quick Actions</div>
+    <div class="quick-actions">
+      <a class="action-btn gold"   href="start-walk.html"><span class="action-icon">🚶‍♀️</span>Start Safe Walk</a>
+      <a class="action-btn danger" href="sos.html">        <span class="action-icon">🚨</span>Emergency SOS</a>
+      <a class="action-btn"        href="walk-history.html"><span class="action-icon">📋</span>Walk History</a>
+      <a class="action-btn"        href="contacts.html">   <span class="action-icon">👥</span>Emergency Contacts</a>
+      <a class="action-btn"        href="complaint.html">  <span class="action-icon">📝</span>File Complaint</a>
+      <a class="action-btn teal"   href="nearby.html">     <span class="action-icon">🏥</span>Nearby Help</a>
+    </div>
+
+    <div class="two-col">
+      <div class="activity-card">
+        <h3>📊 Recent Activity</h3>
+        <div id="activity-list">
+          <div class="activity-item">
+            <div class="activity-dot dot-gold"></div>
+            <div class="activity-text">
+              <div class="activity-title">No walks yet</div>
+              <div class="activity-time">Start your first safe walk today!</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="safety-card">
+        <h3>🛡️ Safety Status</h3>
+        <div class="safety-status-item">
+          <span class="safety-label">📍 Location Service</span>
+          <span class="safety-badge badge-ready">Ready</span>
+        </div>
+        <div class="safety-status-item">
+          <span class="safety-label">🚨 SOS Alert</span>
+          <span class="safety-badge badge-ready">Armed</span>
+        </div>
+        <div class="safety-status-item">
+          <span class="safety-label">👥 Emergency Contacts</span>
+          <span class="safety-badge" id="contacts-badge">Not Set</span>
+        </div>
+        <div class="safety-status-item">
+          <span class="safety-label">🌙 Night Mode</span>
+          <span class="safety-badge badge-active">Active</span>
+        </div>
+        <div class="safety-status-item">
+          <span class="safety-label">📝 Complaints Filed</span>
+          <span class="safety-badge badge-ready" id="complaints-badge">0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="emergency-strip">
+      <p>🚨 <strong>Emergency Numbers</strong> — Available 24/7</p>
+      <div class="emergency-nums">
+        <div class="emergency-num"><div class="num">112</div><div class="lbl">Emergency</div></div>
+        <div class="emergency-num"><div class="num">1091</div><div class="lbl">Women Helpline</div></div>
+        <div class="emergency-num"><div class="num">100</div><div class="lbl">Police</div></div>
+        <div class="emergency-num"><div class="num">108</div><div class="lbl">Ambulance</div></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+
+<footer>
+  <div class="footer-hero-strip">
+    <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1400&q=80" alt="Women safety community">
+    <div class="footer-hero-strip-overlay">
+      <h3>Walk Safe. Walk Fearless.</h3>
+      <p>Emergency: <strong style="color:var(--gold)">112</strong> &nbsp;·&nbsp; Women Helpline: <strong style="color:var(--gold)">1091</strong></p>
+    </div>
+  </div>
+
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-brand-name">
+        <img class="footer-logo" src="/images/HerGuardian_logo_final.png" alt="Her Guardian Logo">
+      </div>
+      <p>Your digital safety companion for every night & day walk. Real-time tracking, smart check-ins, and instant emergency response — because every woman deserves to walk fearlessly.</p>
+      <div class="footer-badges">
+        <span class="badge badge-gold">🔐 Encrypted</span>
+        <span class="badge badge-teal">📡 Real-time GPS</span>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Safety Features</h4>
+      <a href="start-walk.html">🚶‍♀️ Start Safe Walk</a>
+      <a href="tracking.html">📍 Live Tracking</a>
+      <a href="sos.html">🚨 Emergency SOS</a>
+      <a href="route.html">🗺️ Safe Routes</a>
+      <a href="nearby.html">🏥 Nearby Help</a>
+	  <a href="about.html">ℹ️ About</a>
+    </div>
+
+    <div class="footer-col">
+      <h4>My Account</h4>
+      <a href="dashboard.html">📊 Dashboard</a>
+      <a href="contacts.html">👥 My Contacts</a>
+      <a href="walk-history.html">📄 Walk History</a>
+      <a href="Complaint.html">📝 File Report</a>
+      <a href="profile.html">👤 My Profile</a>
+    </div>
+
+    <div class="footer-col">
+      <h4>Emergency</h4>
+      <div class="footer-emergency">
+        <h4>🚨 WOMEN HELPLINE</h4>
+        <div class="num">1091</div>
+        <p>24/7 · Free · Confidential</p>
+      </div>
+      <div class="footer-emergency" style="margin-top:0.75rem;">
+        <h4>🚔 EMERGENCY</h4>
+        <div class="num">112</div>
+        <p>Police · Ambulance · Fire</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>© 2026 HerGuardian · Built with <span class="heart">♥</span> for women's safety ·</p>
+    <div class="footer-badge"><img src="/images/HerGuardian_logo_final.png" alt="logo" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:4px;"> Trusted Safety Platform</div>
+  </div>
+</footer>
+
+<script>
+  const userId   = sessionStorage.getItem('userId');
+  const fullName = sessionStorage.getItem('fullName') || 'User';
+  const token    = sessionStorage.getItem('token') || '';
+
+  if (!userId) window.location.href = 'login.html';
+
+  function authHeaders() {
+    const h = {};
+    if (token) h['Authorization'] = 'Bearer ' + token;
+    return h;
+  }
+
+  function setGreeting() {
+    const hour = new Date().getHours();
+    const name = fullName.split(' ')[0];
+    const g = hour < 12 ? 'Good Morning' : hour < 17 ? 'Good Afternoon' : 'Good Evening';
+    document.getElementById('greeting').textContent = `${g}, ${name} 👋`;
+  }
+
+  function updateClock() {
+    const now = new Date();
+    document.getElementById('current-time').textContent =
+      now.toLocaleDateString('en-IN', { weekday:'long', year:'numeric', month:'long', day:'numeric' }) +
+      ' • ' + now.toLocaleTimeString('en-IN');
+  }
+
+  function loadStats() {
+    fetch(`/api/walk/count/${userId}`, { headers: authHeaders() })
+      .then(r => r.json()).then(d => {
+        document.getElementById('total-walks').textContent = d.total || 0;
+        document.getElementById('safe-walks').textContent  = d.safe  || 0;
+      }).catch(() => {});
+
+    fetch(`/api/sos/count/${userId}`, { headers: authHeaders() })
+      .then(r => r.json()).then(d => {
+        document.getElementById('sos-count').textContent = d.count || 0;
+      }).catch(() => {});
+
+    fetch(`/api/contacts/count/${userId}`, { headers: authHeaders() })
+      .then(r => r.json()).then(d => {
+        const count = d.count || 0;
+        document.getElementById('contacts-count').textContent = count;
+        const badge = document.getElementById('contacts-badge');
+        badge.textContent = count > 0 ? 'Set ✓' : 'Not Set';
+        badge.className   = count > 0 ? 'safety-badge badge-active' : 'safety-badge badge-off';
+      }).catch(() => {});
+
+    fetch(`/api/complaint/${userId}`, { headers: authHeaders() })
+      .then(r => r.json()).then(d => {
+        document.getElementById('complaints-badge').textContent = (d.length || 0) + ' filed';
+      }).catch(() => {});
+
+    fetch(`/api/walk/history/${userId}`, { headers: authHeaders() })
+      .then(r => r.json())
+      .then(walks => {
+        if (!walks.length) return;
+        document.getElementById('activity-list').innerHTML = walks.slice(0,3).map(w => `
+          <div class="activity-item">
+            <div class="activity-dot ${w.status === 'completed' ? 'dot-green' : 'dot-rose'}"></div>
+            <div class="activity-text">
+              <div class="activity-title">📍 ${w.startLocation || 'Walk'} → ${w.destination || 'Destination'}</div>
+              <div class="activity-time">${new Date(w.startTime).toLocaleString('en-IN')}</div>
+            </div>
+            <span class="activity-status ${w.status === 'completed' ? 'status-safe' : 'status-alert'}">
+              ${w.status === 'completed' ? '✅ Safe' : '🚨 SOS'}
+            </span>
+          </div>`).join('');
+      }).catch(() => {});
+  }
+
+  function logout() {
+    sessionStorage.clear();
+    window.location.href = 'login.html';
+  }
+
+  setGreeting();
+  updateClock();
+  setInterval(updateClock, 1000);
+  loadStats();
+</script>
+
+<script src="nav.js"></script>
+</body>
+</html>

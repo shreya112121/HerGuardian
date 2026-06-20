@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>File Complaint –  HerGuardian</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@400;500;700&display=swap');
+
+  :root {
+    --bg:            #ffffff;
+    --bg2:           #faf7ff;
+    --bg3:           #f3eeff;
+    --bg4:           #ede4ff;
+    --card:          #ffffff;
+    --surface:       #f8f4ff;
+    --purple:        #6B21A8;
+    --purple2:       #7C3AED;
+    --purple3:       #A855F7;
+    --purple-light:  #f3eeff;
+    --pink:          #EC4899;
+    --pink2:         #db2777;
+    --pink-light:    #fdf2f8;
+    --text:          #1a0a2e;
+    --text2:         #4a3860;
+    --text3:         #7c6a92;
+    --accent:        #6B21A8;
+    --accent2:       #7C3AED;
+    --accent3:       #A855F7;
+    --border:        rgba(107,33,168,0.10);
+    --border2:       rgba(107,33,168,0.22);
+    --border3:       rgba(236,72,153,0.20);
+    --nav-bg:        rgba(255,255,255,0.92);
+    --danger:        #e84646;
+    --danger2:       #ff6b6b;
+    --success:       #3aaa74;
+    --success2:      #5ec48e;
+    --warning:       #f5a623;
+    --sos:           #e84646;
+    --sos-hover:     #cc3333;
+    --navy:          #1a0a2e;
+    --gold:          #6B21A8;
+    --gold2:         #7C3AED;
+    --teal:          #3aaa74;
+    --rose:          #e84646;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; }
+
+  nav {
+    position:fixed; top:0; left:0; right:0; z-index:1000;
+    background:rgba(0,0,0,0.3); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(10px);
+    transition:0.3s; border-bottom:1px solid rgba(255,255,255,0.2);
+    padding:0 2rem; height:64px; display:flex; align-items:center; justify-content:space-between;
+  }
+  nav.scrolled {
+    background: rgba(255,255,255,0.98);
+    box-shadow: 0 2px 20px rgba(107,33,168,0.08);
+  }
+  .nav-brand { display:flex; align-items:center; gap:10px; font-family:'Playfair Display',serif; font-size:1.2rem; color:var(--text); text-decoration:none; }
+  .nav-links { display:flex; align-items:center; gap:4px; }
+  .nav-links a { color:black; font-size:0.82rem; padding:6px 13px; border-radius:6px; text-decoration:none; transition:all 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color:var(--purple); background:var(--purple-light); }
+  .nav-sos { background:var(--sos) !important; color:#fff !important; font-weight:700 !important; font-size:0.8rem !important; padding:7px 16px !important; border-radius:20px !important; margin-left:4px; animation:pulse-sos 2s infinite; border:none !important; }
+  .nav-logo { width:300px; height:300px; object-fit:contain; border-radius:6px; mix-blend-mode:normal; }
+  @keyframes pulse-sos { 0%,100%{ box-shadow:0 0 0 0 rgba(232,70,70,0.5); } 50%{ box-shadow:0 0 0 8px rgba(232,70,70,0); } }
+  .logout-btn { background:none; border:1px solid #2E003E; color:#2E003E; font-size:0.8rem; padding:5px 12px; border-radius:8px; cursor:pointer; transition:all 0.2s; }
+  .logout-btn:hover { border-color:var(--danger); color:var(--danger); }
+
+  main { padding-top:64px; min-height:100vh; }
+  .page-wrapper { max-width:750px; margin:0 auto; padding:2.5rem 2rem; }
+
+  .page-header { margin-bottom:2rem; }
+  .page-header h1 { font-family:'Playfair Display',serif; font-size:2rem; color:var(--text); }
+  .page-header p { color:var(--text3); font-size:0.88rem; margin-top:4px; }
+
+  .form-card { background:var(--card); border:1px solid var(--border); border-radius:20px; padding:2rem; margin-bottom:1.5rem; box-shadow:0 2px 12px rgba(107,33,168,0.06); }
+  .form-card h3 { font-size:0.78rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--purple); margin-bottom:1.25rem; display:flex; align-items:center; gap:0.5rem; }
+  .form-card h3::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  @media(max-width:500px) { .form-row { grid-template-columns:1fr; } }
+
+  .form-group { margin-bottom:1.1rem; }
+  .form-group label { display:block; font-size:0.8rem; color:var(--text2); margin-bottom:0.5rem; text-transform:uppercase; letter-spacing:0.04em; }
+  .form-group input, .form-group select, .form-group textarea { width:100%; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:11px 14px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:0.92rem; outline:none; transition:all 0.2s; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:var(--purple); background:#fff; box-shadow:0 0 0 3px rgba(107,33,168,0.10); }
+  .form-group input::placeholder, .form-group textarea::placeholder { color:var(--text3); }
+  .form-group select option { background:#fff; color:var(--text); }
+  .form-group textarea { resize:vertical; min-height:120px; }
+
+  .incident-chips { display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:1.1rem; }
+  .chip { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:6px 14px; font-size:0.82rem; color:var(--text2); cursor:pointer; transition:all 0.2s; }
+  .chip:hover { border-color:var(--border2); color:var(--purple); }
+  .chip.selected { background:var(--purple-light); border-color:var(--purple); color:var(--purple); }
+
+  .btn-submit { width:100%; background:linear-gradient(135deg, var(--purple) 0%, var(--pink) 100%); color:#fff; border:none; font-family:'DM Sans',sans-serif; font-weight:700; font-size:1rem; padding:14px; border-radius:30px; cursor:pointer; transition:all 0.2s; }
+  .btn-submit:hover { opacity:0.88; transform:translateY(-2px); box-shadow:0 8px 24px rgba(107,33,168,0.30); }
+  .btn-submit:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+
+  .complaint-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:1.25rem 1.5rem; margin-bottom:0.75rem; animation:fadeIn 0.3s ease; box-shadow:0 1px 6px rgba(107,33,168,0.05); }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+  .complaint-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.5rem; }
+  .complaint-type { font-size:0.82rem; font-weight:600; color:var(--purple); }
+  .complaint-desc { font-size:0.88rem; color:var(--text2); line-height:1.6; margin-bottom:0.5rem; }
+  .complaint-location { font-size:0.78rem; color:var(--text3); }
+  .badge-pending  { font-size:0.72rem; font-weight:600; padding:3px 10px; border-radius:20px; background:rgba(107,33,168,0.10); color:var(--purple); }
+  .badge-resolved { font-size:0.72rem; font-weight:600; padding:3px 10px; border-radius:20px; background:rgba(58,170,116,0.12); color:var(--success); }
+
+  .alert { padding:10px 14px; border-radius:8px; font-size:0.85rem; margin-bottom:1rem; display:none; }
+  .alert-success { background:rgba(58,170,116,0.12); border:1px solid rgba(58,170,116,0.3); color:#1a7a4a; }
+  .alert-error   { background:rgba(232,70,70,0.10); border:1px solid rgba(232,70,70,0.25); color:#c0302e; }
+
+  .section-divider { font-size:0.78rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text3); margin:2rem 0 1rem; }
+
+  footer { background:var(--text); border-top:1px solid var(--border); padding:4rem 2rem 2rem; margin-top:3rem; }
+  .footer-hero-strip { height:180px; overflow:hidden; position:relative; border-radius:16px; max-width:1100px; margin:0 auto 3rem; }
+  .footer-hero-strip img { width:100%; height:100%; object-fit:cover; filter:brightness(0.5); }
+  .footer-hero-strip-overlay { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:1rem; }
+  .footer-hero-strip-overlay h3 { font-family:'Playfair Display',serif; font-size:1.6rem; color:white; margin-bottom:0.5rem; }
+  .footer-hero-strip-overlay p { color:rgba(255,255,255,0.7); font-size:0.9rem; }
+  .footer-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:2.5rem; max-width:1100px; margin:0 auto 3rem; }
+  .footer-brand-name { font-family:'Playfair Display',serif; font-size:1.4rem; color:#fff; margin-bottom:0.75rem; }
+  .footer-brand p { color:rgba(255,255,255,0.55); font-size:0.9rem; line-height:1.7; }
+  .footer-badges { margin-top:1rem; display:flex; gap:0.75rem; flex-wrap:wrap; }
+  .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.75rem; font-weight:600; }
+  .badge-gold { background:rgba(168,85,247,0.15); color:#c084fc; }
+  .badge-teal { background:rgba(58,170,116,0.15); color:var(--success2); }
+  .footer-col h4 { font-size:0.8rem; text-transform:uppercase; letter-spacing:0.1em; color:#fff; margin-bottom:1rem; }
+  .footer-col a { display:block; color:rgba(255,255,255,0.50); font-size:0.9rem; text-decoration:none; margin-bottom:0.5rem; cursor:pointer; transition:color 0.2s; }
+  .footer-col a:hover { color:var(--pink2); }
+  .footer-emergency { background:rgba(232,70,70,0.08); border:1px solid rgba(232,70,70,0.25); border-radius:12px; padding:1rem 1.25rem; }
+  .footer-emergency h4 { color:var(--danger); font-size:0.8rem; margin-bottom:0.5rem; letter-spacing:0.05em; }
+  .footer-emergency .num { font-family:'Playfair Display',serif; font-size:1.5rem; color:var(--danger); font-weight:700; }
+  .footer-emergency p { color:rgba(255,255,255,0.45); font-size:0.8rem; margin-top:4px; }
+  .footer-bottom { border-top:1px solid rgba(255,255,255,0.10); padding-top:1.5rem; max-width:1100px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+  .footer-bottom p { color:rgba(255,255,255,0.40); font-size:0.85rem; }
+  .footer-bottom .heart { color:var(--danger); }
+  .footer-badge { background:rgba(168,85,247,0.10); border:1px solid rgba(168,85,247,0.20); border-radius:20px; padding:4px 14px; font-size:0.78rem; color:#c084fc; }
+  .footer-logo { width:80px; height:80px; object-fit:contain; border-radius:6px; mix-blend-mode:normal; }
+</style>
+</head>
+<body>
+
+<nav>
+	<a class="nav-brand" href="index.html">
+	   <img class="nav-logo" src="/images/HerGuardian_logo_transparent.png" alt="HerGuardian Logo">
+	 </a>
+  <div class="nav-links">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="start-walk.html">Start Walk</a>
+	<a href="tracking.html">Tracking</a>
+	<a href="nearby.html">Nearby Help</a>
+    <a href="contacts.html">Contacts</a>
+    <a href="walk-history.html">History</a>
+    <a href="Complaint.html" class="active">Report</a>
+    <a href="profile.html">Profile</a>
+    <a href="sos.html" class="nav-sos">🚨 SOS</a>
+  </div>
+  <button class="logout-btn" onclick="logout()">Logout</button>
+</nav>
+
+<main>
+  <div class="page-wrapper">
+    <div class="page-header">
+      <h1>📝 File a Complaint</h1>
+      <p>Report an incident to help make your community safer</p>
+    </div>
+
+    <div class="alert alert-success" id="success-msg"></div>
+    <div class="alert alert-error"   id="error-msg"></div>
+
+    <div class="form-card">
+      <h3>🚨 Incident Type</h3>
+      <div class="incident-chips">
+        <div class="chip" onclick="selectChip(this, 'Harassment')">😡 Harassment</div>
+        <div class="chip" onclick="selectChip(this, 'Stalking')">👁️ Stalking</div>
+        <div class="chip" onclick="selectChip(this, 'Assault')">⚠️ Assault</div>
+        <div class="chip" onclick="selectChip(this, 'Eve Teasing')">🚫 Eve Teasing</div>
+        <div class="chip" onclick="selectChip(this, 'Suspicious Activity')">🔍 Suspicious Activity</div>
+        <div class="chip" onclick="selectChip(this, 'Unsafe Area')">⛔ Unsafe Area</div>
+        <div class="chip" onclick="selectChip(this, 'Other')">📋 Other</div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <h3>📍 Location & Time</h3>
+      <div class="form-group">
+        <label>Incident Location</label>
+        <input type="text" id="location" placeholder="e.g. FC Road, Near Cafe, Pune" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Date of Incident</label>
+          <input type="date" id="incident-date" />
+        </div>
+        <div class="form-group">
+          <label>Time of Incident</label>
+          <input type="time" id="incident-time" />
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <h3>📋 Description</h3>
+      <div class="form-group">
+        <label>What Happened?</label>
+        <textarea id="description" placeholder="Describe the incident in detail. Your report helps keep the community safe..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Suspect Description (optional)</label>
+        <input type="text" id="suspect" placeholder="e.g. Height, clothing, vehicle number..." />
+      </div>
+    </div>
+
+    <button class="btn-submit" id="submit-btn" onclick="fileComplaint()">📝 Submit Complaint</button>
+
+    <div class="section-divider">My Previous Complaints</div>
+    <div id="complaints-list">
+      <p style="color:var(--text3);font-size:0.88rem;text-align:center;padding:1rem;">Loading complaints...</p>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-hero-strip">
+    <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1400&q=80" alt="Women safety community">
+    <div class="footer-hero-strip-overlay">
+      <h3>Walk Safe. Walk Fearless.</h3>
+      <p>Emergency: <strong style="color:var(--gold)">112</strong> &nbsp;·&nbsp; Women Helpline: <strong style="color:var(--gold)">1091</strong></p>
+    </div>
+  </div>
+
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-brand-name">
+        <img class="footer-logo" src="/images/HerGuardian_logo_final.png" alt="Her Guardian Logo">
+      </div>
+      <p>Your digital safety companion for every night & day walk. Real-time tracking, smart check-ins, and instant emergency response — because every woman deserves to walk fearlessly.</p>
+      <div class="footer-badges">
+        <span class="badge badge-gold">🔐 Encrypted</span>
+        <span class="badge badge-teal">📡 Real-time GPS</span>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Safety Features</h4>
+      <a href="start-walk.html">🚶‍♀️ Start Safe Walk</a>
+      <a href="tracking.html">📍 Live Tracking</a>
+      <a href="sos.html">🚨 Emergency SOS</a>
+      <a href="nearby.html">🏥 Nearby Help</a>
+	  <a href="about.html">ℹ️ About</a>
+    </div>
+
+    <div class="footer-col">
+      <h4>My Account</h4>
+      <a href="dashboard.html">📊 Dashboard</a>
+      <a href="contacts.html">👥 My Contacts</a>
+      <a href="walk-history.html">📄 Walk History</a>
+      <a href="Complaint.html">📝 File Report</a>
+      <a href="profile.html">👤 My Profile</a>
+    </div>
+
+    <div class="footer-col">
+      <h4>Emergency</h4>
+      <div class="footer-emergency">
+        <h4>🚨 WOMEN HELPLINE</h4>
+        <div class="num">1091</div>
+        <p>24/7 · Free · Confidential</p>
+      </div>
+      <div class="footer-emergency" style="margin-top:0.75rem;">
+        <h4>🚔 EMERGENCY</h4>
+        <div class="num">112</div>
+        <p>Police · Ambulance · Fire</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>© 2026 HerGuardian · Built with <span class="heart">♥</span> for women's safety ·</p>
+    <div class="footer-badge"><img src="/images/HerGuardian_logo_final.png" alt="logo" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:4px;"> Trusted Safety Platform</div>
+  </div>
+</footer>
+
+<script>
+  const userId = sessionStorage.getItem('userId');
+  const token  = sessionStorage.getItem('token') || '';
+  if (!userId) window.location.href = 'login.html';
+
+  function logout() { sessionStorage.clear(); window.location.href = 'login.html'; }
+  function authHeaders(json) {
+    const h = {};
+    if (token) h['Authorization'] = 'Bearer ' + token;
+    if (json)  h['Content-Type']  = 'application/json';
+    return h;
+  }
+
+  let selectedType = '';
+  const now = new Date();
+  document.getElementById('incident-date').value = now.toISOString().split('T')[0];
+  document.getElementById('incident-time').value =
+    now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+
+  function selectChip(el, type) {
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedType = type;
+  }
+
+  function showAlert(type, msg) {
+    const el = document.getElementById(type === 'success' ? 'success-msg' : 'error-msg');
+    el.textContent   = msg;
+    el.style.display = 'block';
+    setTimeout(() => el.style.display = 'none', 4000);
+  }
+
+  function fileComplaint() {
+    const location    = document.getElementById('location').value.trim();
+    const description = document.getElementById('description').value.trim();
+    const btn         = document.getElementById('submit-btn');
+    if (!selectedType) { showAlert('error', 'Incident type select kara!'); return; }
+    if (!location)     { showAlert('error', 'Location required ahe!'); return; }
+    if (!description)  { showAlert('error', 'Description required ahe!'); return; }
+    btn.disabled    = true;
+    btn.textContent = 'Submitting...';
+    fetch('/api/complaint/file', {
+      method:  'POST',
+      headers: authHeaders(true),
+      body:    JSON.stringify({ userId, incidentType: selectedType, location, description })
+    })
+    .then(res => res.json())
+    .then(data => {
+      btn.disabled    = false;
+      btn.textContent = '📝 Submit Complaint';
+      if (data.success) {
+        showAlert('success', `✅ Complaint #${data.complaintId} filed successfully!`);
+        document.getElementById('location').value    = '';
+        document.getElementById('description').value = '';
+        document.getElementById('suspect').value     = '';
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+        selectedType = '';
+        loadComplaints();
+      } else {
+        showAlert('error', data.message || 'Failed to file complaint.');
+      }
+    })
+    .catch(() => {
+      btn.disabled    = false;
+      btn.textContent = '📝 Submit Complaint';
+      showAlert('error', 'Server error! Please try again.');
+    });
+  }
+
+  function loadComplaints() {
+    fetch(`/api/complaint/${userId}`, { headers: authHeaders() })
+    .then(res => res.json())
+    .then(complaints => {
+      const list = document.getElementById('complaints-list');
+      if (!complaints.length) {
+        list.innerHTML = '<p style="color:var(--text3);font-size:0.88rem;text-align:center;padding:1rem;">No complaints filed yet.</p>';
+        return;
+      }
+      list.innerHTML = complaints.map(c => `
+        <div class="complaint-card">
+          <div class="complaint-top">
+            <span class="complaint-type">🚨 ${c.incidentType || 'Incident'}</span>
+            <span class="${c.status === 'resolved' ? 'badge-resolved' : 'badge-pending'}">
+              ${c.status === 'resolved' ? '✅ Resolved' : '⏳ Pending'}
+            </span>
+          </div>
+          <div class="complaint-desc">${c.description}</div>
+          <div class="complaint-location">📍 ${c.location || 'Location not specified'} • ${new Date(c.filedAt).toLocaleString('en-IN')}</div>
+        </div>`).join('');
+    })
+    .catch(() => {
+      document.getElementById('complaints-list').innerHTML =
+        '<p style="color:var(--text3);font-size:0.88rem;text-align:center;">Failed to load complaints.</p>';
+    });
+  }
+
+  loadComplaints();
+</script>
+
+<script src="nav.js"></script>
+</body>
+</html>

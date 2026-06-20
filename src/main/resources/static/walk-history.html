@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Walk History – HerGuardian</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+	@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@400;500;700&display=swap');
+  :root {
+    --bg:            #ffffff;
+    --bg2:           #faf7ff;
+    --bg3:           #f3eeff;
+    --bg4:           #ede8ff;
+    --surface:       #f8f4ff;
+    --card:          #ffffff;
+    --purple:        #6B21A8;
+    --purple2:       #7C3AED;
+    --purple3:       #A855F7;
+    --purple-light:  #f3eeff;
+
+    --pink:          #EC4899;
+    --pink2:         #db2777;
+    --pink-light:    #fdf2f8;
+
+    --text:          #1a0a2e;
+    --text2:         #4a3860;
+    --text3:         #7c6a92;
+
+    --accent:        #6B21A8;
+    --accent2:       #7C3AED;
+    --accent3:       #A855F7;
+
+    --border:        rgba(107,33,168,0.10);
+    --border2:       rgba(107,33,168,0.22);
+    --border3:       rgba(236,72,153,0.20);
+
+    --nav-bg:        rgba(255,255,255,0.92);
+
+    --danger:        #e84646;
+    --danger2:       #ff6b6b;
+    --success:       #3aaa74;
+    --success2:      #5ec48e;
+    --warning:       #f5a623;
+    --sos:           #e84646;
+    --sos-hover:     #cc3333;
+
+    --gold:          #6B21A8;
+    --gold2:         #7C3AED;
+    --gold3:         #A855F7;
+    --navy:          #1a0a2e;
+    --navy2:         #faf7ff;
+    --navy3:         #f3eeff;
+    --navy4:         #f8f4ff;
+    --teal:          #3aaa74;
+    --rose:          #e84646;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; }
+
+  nav { position:fixed; top:0; left:0; right:0; z-index:1000; background:rgba(0,0,0,0.3); backdrop-filter:blur(8px); border-bottom:1px solid rgba(255,255,255,0.2); padding:0 2rem; height:64px; display:flex; align-items:center; justify-content:space-between; }
+  nav.scrolled {
+    background: rgba(255,255,255,0.98);
+    box-shadow: 0 2px 20px rgba(107,33,168,0.08);
+  }
+  .nav-brand { display:flex; align-items:center; gap:10px; font-family:'Playfair Display',serif; font-size:1.2rem; color:var(--purple); text-decoration:none; }
+  .nav-links { display:flex; align-items:center; gap:4px; }
+  .nav-links a { color:black; font-size:0.82rem; padding:6px 13px; border-radius:6px; text-decoration:none; transition:all 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color:var(--purple); background:var(--purple-light); }
+  .nav-sos { background:var(--sos) !important; color:#fff !important; font-weight:700 !important; font-size:0.8rem !important; padding:7px 16px !important; border-radius:20px !important; margin-left:4px; animation:pulse-sos 2s infinite; }
+  .nav-logo { width:300px; height:300px; object-fit:contain; border-radius:6px; mix-blend-mode:normal; }
+  @keyframes pulse-sos { 0%,100%{ box-shadow:0 0 0 0 rgba(232,70,70,0.5); } 50%{ box-shadow:0 0 0 8px rgba(232,70,70,0); } }
+  .logout-btn { background:none; border:1px solid #2E003E; color:#2E003E; font-size:0.8rem; padding:5px 12px; border-radius:8px; cursor:pointer; transition:all 0.2s; }
+  .logout-btn:hover { border-color:var(--danger); color:var(--danger); }
+
+  main { padding-top:64px; min-height:100vh; }
+  .page-wrapper { max-width:800px; margin:0 auto; padding:2.5rem 2rem; }
+
+  .history-banner { display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem; flex-wrap:wrap; gap:1rem; }
+  .history-banner h1 { font-family:'Playfair Display',serif; font-size:2rem; color:var(--text); }
+  .history-banner p { color:var(--text3); font-size:0.88rem; margin-top:4px; }
+
+  .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:2rem; }
+  @media(max-width:600px) { .stats-row { grid-template-columns:repeat(2,1fr); } }
+  .stat-box { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:1.25rem; text-align:center; box-shadow:0 1px 4px rgba(107,33,168,0.05); }
+  .stat-icon { font-size:1.6rem; margin-bottom:0.5rem; }
+  .stat-num { font-family:'Playfair Display',serif; font-size:1.8rem; color:var(--purple); font-weight:700; }
+  .stat-label { font-size:0.72rem; color:var(--text3); text-transform:uppercase; letter-spacing:0.06em; margin-top:4px; }
+
+  .filter-tabs { display:flex; gap:0.5rem; margin-bottom:1.5rem; flex-wrap:wrap; }
+  .tab { background:var(--card); border:1px solid var(--border); border-radius:20px; padding:7px 16px; font-size:0.82rem; color:var(--text2); cursor:pointer; transition:all 0.2s; }
+  .tab:hover { border-color:var(--border2); color:var(--purple); }
+  .tab.active { background:var(--purple-light); border-color:var(--purple); color:var(--purple); }
+
+  .history-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:1.25rem 1.5rem; margin-bottom:0.75rem; display:flex; align-items:center; gap:1rem; transition:all 0.2s; animation:fadeIn 0.3s ease; box-shadow:0 1px 4px rgba(107,33,168,0.05); }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+  .history-card:hover { border-color:var(--border2); }
+  .history-icon-wrap { width:44px; height:44px; border-radius:12px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:1.5rem; }
+  .icon-safe    { background:rgba(58,170,116,0.12); }
+  .icon-alert   { background:rgba(232,70,70,0.10); }
+  .icon-ongoing { background:rgba(107,33,168,0.10); }
+  .history-info { flex:1; }
+  .history-route { font-weight:600; font-size:0.95rem; color:var(--text); }
+  .history-meta  { font-size:0.78rem; color:var(--text3); margin-top:4px; }
+  .history-badge { font-size:0.75rem; font-weight:600; padding:4px 12px; border-radius:20px; white-space:nowrap; }
+  .badge-safe    { background:rgba(58,170,116,0.12); color:var(--success); }
+  .badge-alert   { background:rgba(232,70,70,0.10); color:var(--danger); }
+  .badge-ongoing { background:rgba(107,33,168,0.10); color:var(--purple); }
+
+  .empty-state { text-align:center; padding:3rem 2rem; background:var(--card); border:1px solid var(--border); border-radius:16px; }
+  .empty-state .icon { font-size:3rem; margin-bottom:1rem; }
+  .empty-state h3 { color:var(--text); margin-bottom:0.5rem; }
+  .empty-state p  { color:var(--text3); font-size:0.88rem; }
+  .empty-state a  { display:inline-block; margin-top:1.25rem; background:linear-gradient(135deg, var(--purple) 0%, var(--pink) 100%); color:#fff; font-family:'DM Sans',sans-serif; font-weight:700; font-size:0.9rem; padding:10px 24px; border-radius:20px; text-decoration:none; }
+
+  .loading { text-align:center; padding:2rem; color:var(--text3); }
+  .loading-spinner { width:36px; height:36px; border:3px solid var(--border); border-top-color:var(--purple); border-radius:50%; animation:spin 0.8s linear infinite; margin:0 auto 1rem; }
+  @keyframes spin { to{transform:rotate(360deg)} }
+
+  footer { background:var(--text); border-top:1px solid var(--border); padding:4rem 2rem 2rem; margin-top:0; }
+  .footer-hero-strip { height:180px; overflow:hidden; position:relative; border-radius:16px; max-width:1100px; margin:0 auto 3rem; }
+  .footer-hero-strip img { width:100%; height:100%; object-fit:cover; filter:brightness(0.5); }
+  .footer-hero-strip-overlay { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:1rem; }
+  .footer-hero-strip-overlay h3 { font-family:'Playfair Display',serif; font-size:1.6rem; color:white; margin-bottom:0.5rem; }
+  .footer-hero-strip-overlay p { color:rgba(255,255,255,0.7); font-size:0.9rem; }
+  .footer-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:2.5rem; max-width:1100px; margin:0 auto 3rem; }
+  .footer-brand-name { font-family:'Playfair Display',serif; font-size:1.4rem; color:#fff; margin-bottom:0.75rem; display:flex; align-items:center; gap:8px; }
+  .footer-logo { width:28px; height:28px; object-fit:contain; border-radius:4px; }
+  .footer-brand p { color:rgba(255,255,255,0.55); font-size:0.9rem; line-height:1.7; }
+  .footer-badges { margin-top:1rem; display:flex; gap:0.75rem; flex-wrap:wrap; }
+  .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.75rem; font-weight:600; }
+  .badge-gold { background:rgba(168,85,247,0.15); color:#c084fc; }
+  .badge-teal { background:rgba(58,170,116,0.15); color:var(--success2); }
+  .footer-col h4 { font-size:0.8rem; text-transform:uppercase; letter-spacing:0.1em; color:#fff; margin-bottom:1rem; }
+  .footer-col a { display:block; color:rgba(255,255,255,0.50); font-size:0.9rem; text-decoration:none; margin-bottom:0.5rem; cursor:pointer; transition:color 0.2s; }
+  .footer-col a:hover { color:var(--pink2); }
+  .footer-emergency { background:rgba(232,70,70,0.08); border:1px solid rgba(232,70,70,0.25); border-radius:12px; padding:1rem 1.25rem; }
+  .footer-emergency h4 { color:var(--danger); font-size:0.8rem; margin-bottom:0.5rem; letter-spacing:0.05em; }
+  .footer-emergency .num { font-family:'Playfair Display',serif; font-size:1.5rem; color:var(--danger); font-weight:700; }
+  .footer-emergency p { color:rgba(255,255,255,0.45); font-size:0.8rem; margin-top:4px; }
+  .footer-bottom { border-top:1px solid rgba(255,255,255,0.10); padding-top:1.5rem; max-width:1100px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+  .footer-bottom p { color:rgba(255,255,255,0.40); font-size:0.85rem; }
+  .footer-bottom .heart { color:var(--danger); }
+  .footer-badge { background:rgba(168,85,247,0.10); border:1px solid rgba(168,85,247,0.20); border-radius:20px; padding:4px 14px; font-size:0.78rem; color:#c084fc; }
+  .footer-logo { width:80px; height:80px; object-fit:contain; border-radius:6px; mix-blend-mode:normal; }
+
+</style>
+</head>
+<body>
+
+<nav>
+  	<a class="nav-brand" href="index.html">
+	   <img class="nav-logo" src="/images/HerGuardian_logo_transparent.png" alt="Her Guardian Logo">
+	 </a>
+  <div class="nav-links">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="start-walk.html">Start Walk</a>
+	<a href="tracking.html">Tracking</a>
+	<a href="nearby.html">Nearby Help</a>
+    <a href="contacts.html">Contacts</a>
+    <a href="walk-history.html" class="active">History</a>
+    <a href="complaint.html">Report</a>
+    <a href="profile.html">Profile</a>
+    <a href="sos.html" class="nav-sos">🚨 SOS</a>
+  </div>
+  <button class="logout-btn" onclick="logout()">Logout</button>
+</nav>
+
+<main>
+  <div class="page-wrapper">
+
+    <div class="history-banner">
+      <div>
+        <h1>📄 Walk History</h1>
+        <p>All your previous walks and safety records</p>
+      </div>
+      <a href="start-walk.html" style="background:linear-gradient(135deg,var(--purple) 0%,var(--pink) 100%);color:#fff;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.88rem;padding:10px 20px;border-radius:12px;text-decoration:none;">
+        🚶‍♀️ New Walk
+      </a>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-icon">🚶‍♀️</div>
+        <div class="stat-num" id="total-walks">0</div>
+        <div class="stat-label">Total Walks</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon">✅</div>
+        <div class="stat-num" id="safe-walks" style="color:var(--success)">0</div>
+        <div class="stat-label">Safe Trips</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon">🚨</div>
+        <div class="stat-num" id="alert-walks" style="color:var(--danger)">0</div>
+        <div class="stat-label">SOS Triggered</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon">🟡</div>
+        <div class="stat-num" id="ongoing-walks" style="color:var(--gold)">0</div>
+        <div class="stat-label">Ongoing</div>
+      </div>
+    </div>
+
+    <div class="filter-tabs">
+      <div class="tab active" onclick="filterWalks('all', this)">🗺️ All</div>
+      <div class="tab" onclick="filterWalks('completed', this)">✅ Safe</div>
+      <div class="tab" onclick="filterWalks('ongoing', this)">🟡 Ongoing</div>
+    </div>
+
+    <div id="history-list">
+      <div class="loading">
+        <div class="loading-spinner"></div>
+        <p>Loading walk history...</p>
+      </div>
+    </div>
+
+  </div>
+</main>
+<footer>
+  <div class="footer-hero-strip">
+    <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1400&q=80" alt="Women safety community">
+    <div class="footer-hero-strip-overlay">
+      <h3>Walk Safe. Walk Fearless.</h3>
+      <p>Emergency: <strong style="color:var(--gold)">112</strong> &nbsp;·&nbsp; Women Helpline: <strong style="color:var(--gold)">1091</strong></p>
+    </div>
+  </div>
+
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-brand-name">
+        <img class="footer-logo" src="/images/HerGuardian_logo_final.png" alt="Her Guardian Logo">
+      </div>
+      <p>Your digital safety companion for every night & day walk. Real-time tracking, smart check-ins, and instant emergency response — because every woman deserves to walk fearlessly.</p>
+      <div class="footer-badges">
+        <span class="badge badge-gold">🔐 Encrypted</span>
+        <span class="badge badge-teal">📡 Real-time GPS</span>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Safety Features</h4>
+      <a href="start-walk.html">🚶‍♀️ Start Safe Walk</a>
+      <a href="tracking.html">📍 Live Tracking</a>
+      <a href="sos.html">🚨 Emergency SOS</a>
+      <a href="nearby.html">🏥 Nearby Help</a>
+	  <a href="about.html">ℹ️ About</a>
+    </div>
+
+    <div class="footer-col">
+      <h4>My Account</h4>
+      <a href="dashboard.html">📊 Dashboard</a>
+      <a href="contacts.html">👥 My Contacts</a>
+      <a href="history.html">📄 Walk History</a>
+      <a href="Complaint.html">📝 File Report</a>
+      <a href="profile.html">👤 My Profile</a>
+    </div>
+
+    <div class="footer-col">
+      <h4>Emergency</h4>
+      <div class="footer-emergency">
+        <h4>🚨 WOMEN HELPLINE</h4>
+        <div class="num">1091</div>
+        <p>24/7 · Free · Confidential</p>
+      </div>
+      <div class="footer-emergency" style="margin-top:0.75rem;">
+        <h4>🚔 EMERGENCY</h4>
+        <div class="num">112</div>
+        <p>Police · Ambulance · Fire</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>© 2026 HerGuardian · Built with <span class="heart">♥</span> for women's safety ·</p>
+    <div class="footer-badge"><img src="/images/HerGuardian_logo_final.png" alt="logo" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:4px;"> Trusted Safety Platform</div>
+  </div>
+</footer>
+
+
+<script>
+  const userId = sessionStorage.getItem('userId');
+  const token  = sessionStorage.getItem('token') || '';
+
+  if (!userId) window.location.href = 'login.html';
+
+  function logout() {
+    sessionStorage.clear();
+    window.location.href = 'login.html';
+  }
+
+  let allWalks = [];
+  let currentFilter = 'all';
+
+  function loadWalkHistory() {
+    const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+    fetch(`/api/walk/history/${userId}`, { headers })
+    .then(res => res.json())
+    .then(walks => {
+      allWalks = walks;
+      document.getElementById('total-walks').textContent   = walks.length;
+      document.getElementById('safe-walks').textContent    = walks.filter(w => w.status === 'completed').length;
+      document.getElementById('alert-walks').textContent   = walks.filter(w => w.status === 'sos').length;
+      document.getElementById('ongoing-walks').textContent = walks.filter(w => w.status === 'ongoing').length;
+      renderWalks();
+    })
+    .catch(() => {
+      document.getElementById('history-list').innerHTML =
+        '<div class="loading"><p>Failed to load walk history.</p></div>';
+    });
+  }
+
+  function renderWalks() {
+    const walks = currentFilter === 'all'
+      ? allWalks
+      : allWalks.filter(w => w.status === currentFilter);
+
+    const list = document.getElementById('history-list');
+
+    if (!walks.length) {
+      list.innerHTML = `
+        <div class="empty-state">
+          <div class="icon">🚶‍♀️</div>
+          <h3>No walks found</h3>
+          <p>Start your first safe walk tonight!</p>
+          <a href="start-walk.html">🛡️ Start Walk</a>
+        </div>`;
+      return;
+    }
+
+    list.innerHTML = walks.map(w => {
+      const isCompleted = w.status === 'completed';
+      const isOngoing   = w.status === 'ongoing';
+      const icon        = isCompleted ? '🚶‍♀️' : isOngoing ? '🟡' : '⚠️';
+      const iconClass   = isCompleted ? 'icon-safe' : isOngoing ? 'icon-ongoing' : 'icon-alert';
+      const badgeClass  = isCompleted ? 'badge-safe' : isOngoing ? 'badge-ongoing' : 'badge-alert';
+      const badgeText   = isCompleted ? '✅ Safe' : isOngoing ? '🟡 Ongoing' : '🚨 SOS';
+      const startTime   = w.startTime
+        ? new Date(w.startTime).toLocaleString('en-IN', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' })
+        : 'Unknown';
+      const duration = w.endTime && w.startTime
+        ? Math.round((new Date(w.endTime) - new Date(w.startTime)) / 60000) + ' min'
+        : isOngoing ? 'Ongoing' : '—';
+
+      return `
+        <div class="history-card">
+          <div class="history-icon-wrap ${iconClass}">${icon}</div>
+          <div class="history-info">
+            <div class="history-route">${w.startLocation || 'Unknown'} → ${w.destination || 'Unknown'}</div>
+            <div class="history-meta">📅 ${startTime} • ⏱️ ${duration}</div>
+          </div>
+          <span class="history-badge ${badgeClass}">${badgeText}</span>
+        </div>`;
+    }).join('');
+  }
+
+  function filterWalks(filter, el) {
+    currentFilter = filter;
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    renderWalks();
+  }
+
+  loadWalkHistory();
+</script>
+
+<script src="nav.js"></script>
+</body>
+</html>

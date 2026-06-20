@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Tracking – HerGuardian</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+	@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@400;500;700&display=swap');
+  :root {
+    --bg:            #ffffff;
+    --bg2:           #faf7ff;
+    --bg3:           #f3eeff;
+    --bg4:           #ede8ff;
+    --surface:       #f8f4ff;
+    --card:          #ffffff;
+    --purple:        #6B21A8;
+    --purple2:       #7C3AED;
+    --purple3:       #A855F7;
+    --purple-light:  #f3eeff;
+
+    --pink:          #EC4899;
+    --pink2:         #db2777;
+    --pink-light:    #fdf2f8;
+
+    --text:          #1a0a2e;
+    --text2:         #4a3860;
+    --text3:         #7c6a92;
+
+    --accent:        #6B21A8;
+    --accent2:       #7C3AED;
+    --accent3:       #A855F7;
+
+    --border:        rgba(107,33,168,0.10);
+    --border2:       rgba(107,33,168,0.22);
+    --border3:       rgba(236,72,153,0.20);
+
+    --nav-bg:        rgba(255,255,255,0.92);
+
+    --danger:        #e84646;
+    --danger2:       #ff6b6b;
+    --success:       #3aaa74;
+    --success2:      #5ec48e;
+    --warning:       #f5a623;
+    --sos:           #e84646;
+    --sos-hover:     #cc3333;
+
+    --gold:          #6B21A8;
+    --gold2:         #7C3AED;
+    --gold3:         #A855F7;
+    --navy:          #1a0a2e;
+    --navy2:         #faf7ff;
+    --navy3:         #f3eeff;
+    --navy4:         #f8f4ff;
+    --teal:          #3aaa74;
+    --rose:          #e84646;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; }
+
+  nav { position:fixed; top:0; left:0; right:0; z-index:1000; background:rgba(0,0,0,0.3); backdrop-filter:blur(8px); border-bottom:1px solid rgba(255,255,255,0.2); padding:0 2rem; height:64px; display:flex; align-items:center; justify-content:space-between; }
+  nav.scrolled {
+    background: rgba(255,255,255,0.98);
+    box-shadow: 0 2px 20px rgba(107,33,168,0.08);
+  }
+  .nav-brand { display:flex; align-items:center; gap:10px; font-family:'Playfair Display',serif; font-size:1.2rem; color:var(--purple); text-decoration:none; }
+  .nav-links { display:flex; align-items:center; gap:4px; }
+  .nav-links a { color:black; font-size:0.82rem; padding:6px 13px; border-radius:6px; text-decoration:none; transition:all 0.2s; }
+  .nav-logo { width:300px; height:300px; object-fit:contain; border-radius:6px; mix-blend-mode:normal; }
+  .nav-links a:hover, .nav-links a.active { color:var(--purple); background:var(--purple-light); }
+  .nav-sos { background:var(--sos) !important; color:#fff !important; font-weight:700 !important; font-size:0.8rem !important; padding:7px 16px !important; border-radius:20px !important; margin-left:4px; animation:pulse-sos 2s infinite; }
+  @keyframes pulse-sos { 0%,100%{ box-shadow:0 0 0 0 rgba(232,70,70,0.5); } 50%{ box-shadow:0 0 0 8px rgba(232,70,70,0); } }
+  .logout-btn { background:none; border:1px solid #2E003E; color:#2E003E; font-size:0.8rem; padding:5px 12px; border-radius:8px; cursor:pointer; transition:all 0.2s; }
+  .logout-btn:hover { border-color:var(--danger); color:var(--danger); }
+
+  main { padding-top:64px; min-height:100vh; }
+  .page-wrapper { max-width:900px; margin:0 auto; padding:2rem; }
+
+  .tracking-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem; }
+  .tracking-header h1 { font-family:'Playfair Display',serif; font-size:1.8rem; color:var(--text); }
+  .tracking-header p { color:var(--text3); font-size:0.88rem; margin-top:4px; }
+  .status-badge { display:flex; align-items:center; gap:0.5rem; background:rgba(58,170,116,0.10); border:1px solid rgba(58,170,116,0.25); color:var(--success); font-size:0.85rem; font-weight:600; padding:6px 14px; border-radius:20px; }
+  .blink { animation:blink 0.8s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  .tracking-map { width:100%; height:300px; border-radius:16px; overflow:hidden; position:relative; margin-bottom:1.5rem; border:1px solid var(--border2); background:var(--surface); }
+  .map-bg { position:absolute; inset:0; background:linear-gradient(135deg, #ede8ff 0%, #ddd5f8 50%, #ede8ff 100%); }
+  .map-grid { position:absolute; inset:0; background-image:linear-gradient(rgba(107,33,168,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(107,33,168,0.07) 1px, transparent 1px); background-size:40px 40px; }
+  .map-road-h { position:absolute; left:0; right:0; height:3px; background:rgba(107,33,168,0.15); border-radius:2px; }
+  .map-road-v { position:absolute; top:0; bottom:0; width:3px; background:rgba(107,33,168,0.15); border-radius:2px; }
+  .map-route { position:absolute; bottom:80px; left:60px; right:80px; height:3px; background:linear-gradient(90deg, var(--success), var(--purple)); border-radius:2px; animation:routeGlow 2s infinite; }
+  @keyframes routeGlow { 0%,100%{opacity:1} 50%{opacity:0.6} }
+  .map-pin { position:absolute; bottom:76px; left:55%; width:18px; height:18px; border-radius:50%; background:var(--purple); border:3px solid white; box-shadow:0 0 0 4px rgba(107,33,168,0.25); animation:pinPulse 1.5s infinite; transform:translate(-50%,-50%); z-index:2; }
+  @keyframes pinPulse { 0%,100%{box-shadow:0 0 0 4px rgba(107,33,168,0.25)} 50%{box-shadow:0 0 0 10px rgba(107,33,168,0)} }
+  .map-dest { position:absolute; bottom:76px; right:60px; width:16px; height:16px; border-radius:50%; background:var(--success); border:3px solid white; transform:translate(50%,-50%); z-index:2; }
+  .map-label { position:absolute; top:12px; left:12px; background:rgba(255,255,255,0.92); border:1px solid var(--border); border-radius:8px; padding:6px 12px; font-size:0.78rem; color:var(--text2); z-index:3; }
+  .map-label span { color:var(--success); font-weight:600; }
+  .map-location { position:absolute; top:12px; right:12px; background:rgba(255,255,255,0.92); border:1px solid var(--border); border-radius:8px; padding:6px 12px; font-size:0.78rem; color:var(--text2); z-index:3; max-width:200px; text-align:right; }
+  .map-dest-label { position:absolute; bottom:12px; right:12px; background:rgba(255,255,255,0.92); border:1px solid var(--border); border-radius:8px; padding:6px 12px; font-size:0.78rem; color:var(--text2); z-index:3; }
+  .map-dest-label span { color:var(--purple); }
+
+  .tracking-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:1.5rem; }
+  .track-stat { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:1.25rem; text-align:center; }
+  .track-val { font-family:'Playfair Display',serif; font-size:2rem; font-weight:700; color:var(--purple); }
+  .track-lbl { font-size:0.72rem; color:var(--text3); text-transform:uppercase; letter-spacing:0.06em; margin-top:4px; }
+
+  .timer-card { background:var(--card); border:1px solid var(--border2); border-radius:16px; padding:2rem; text-align:center; margin-bottom:1.5rem; }
+  .timer-label { font-size:0.75rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text3); margin-bottom:0.75rem; }
+  .timer-num { font-family:'Playfair Display',serif; font-size:3.5rem; font-weight:900; color:var(--purple); letter-spacing:0.05em; }
+  .timer-sub { color:var(--text3); font-size:0.82rem; margin-top:0.5rem; }
+  .timer-progress { width:100%; height:8px; background:var(--bg3); border-radius:4px; margin:1.25rem 0; overflow:hidden; }
+  .timer-bar { height:100%; background:linear-gradient(90deg, var(--success), var(--purple)); border-radius:4px; transition:width 1s linear; }
+  .timer-controls { display:flex; gap:1rem; justify-content:center; margin-top:1.5rem; flex-wrap:wrap; }
+  .timer-btn { background:var(--surface); border:1px solid var(--border); color:var(--text2); font-family:'DM Sans',sans-serif; font-weight:600; font-size:0.9rem; padding:10px 24px; border-radius:12px; cursor:pointer; transition:all 0.2s; }
+  .timer-btn:hover { border-color:var(--border2); color:var(--purple); }
+  .timer-btn.safe { border-color:rgba(58,170,116,0.35); color:var(--success); }
+  .timer-btn.safe:hover { background:rgba(58,170,116,0.08); }
+  .timer-btn.danger { border-color:rgba(232,70,70,0.35); color:var(--danger); }
+  .timer-btn.danger:hover { background:rgba(232,70,70,0.08); }
+
+  .quick-actions { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:1.5rem; }
+  @media(max-width:600px) { .quick-actions { grid-template-columns:repeat(2,1fr); } }
+  .action-btn { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1rem; color:var(--text); font-family:'DM Sans',sans-serif; font-size:0.85rem; font-weight:500; cursor:pointer; transition:all 0.2s; text-align:center; text-decoration:none; display:block; }
+  .action-btn:hover { border-color:var(--border2); background:var(--surface); }
+  .action-btn.danger { border-color:rgba(232,70,70,0.3); color:var(--danger); }
+  .action-btn.danger:hover { background:rgba(232,70,70,0.08); }
+  .action-icon { font-size:1.5rem; display:block; margin-bottom:0.4rem; }
+
+  .walk-info-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:1.25rem 1.5rem; margin-bottom:1.5rem; display:flex; gap:1.5rem; flex-wrap:wrap; }
+  .walk-info-item { flex:1; min-width:120px; }
+  .walk-info-label { font-size:0.72rem; color:var(--text3); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px; }
+  .walk-info-val { font-size:0.95rem; color:var(--text); font-weight:500; }
+
+  .overlay { display:none; position:fixed; inset:0; z-index:2000; background:rgba(250,247,255,0.85); backdrop-filter:blur(8px); align-items:center; justify-content:center; }
+  .overlay.show { display:flex; }
+  .overlay-card { background:var(--card); border:1px solid var(--border2); border-radius:20px; padding:2.5rem; text-align:center; max-width:380px; width:90%; box-shadow:0 8px 32px rgba(107,33,168,0.12); }
+  .overlay-icon { font-size:3rem; margin-bottom:1rem; }
+  .overlay-card h3 { font-family:'Playfair Display',serif; font-size:1.5rem; color:var(--text); margin-bottom:0.75rem; }
+  .overlay-card p { color:var(--text2); font-size:0.9rem; margin-bottom:1.5rem; }
+  .overlay-btn { width:100%; background:var(--success); color:white; border:none; font-family:'DM Sans',sans-serif; font-weight:700; font-size:1rem; padding:13px; border-radius:20px; cursor:pointer; margin-bottom:0.75rem; }
+  .overlay-btn-outline { width:100%; background:none; border:1px solid var(--border); color:var(--text2); font-family:'DM Sans',sans-serif; font-weight:500; font-size:0.9rem; padding:11px; border-radius:20px; cursor:pointer; }
+
+  .no-walk { text-align:center; padding:4rem 2rem; background:var(--card); border:1px solid var(--border); border-radius:20px; }
+  .no-walk .icon { font-size:3rem; margin-bottom:1rem; }
+  .no-walk h3 { font-family:'Playfair Display',serif; color:var(--text); margin-bottom:0.5rem; }
+  .no-walk p { color:var(--text3); font-size:0.88rem; margin-bottom:1.5rem; }
+  .no-walk a { background:linear-gradient(135deg, var(--purple) 0%, var(--pink) 100%); color:#fff; border:none; font-family:'DM Sans',sans-serif; font-weight:700; font-size:0.95rem; padding:12px 28px; border-radius:20px; text-decoration:none; display:inline-block; }
+
+  footer { background:var(--text); border-top:1px solid var(--border); padding:4rem 2rem 2rem; margin-top:0; }
+  .footer-hero-strip { height:180px; overflow:hidden; position:relative; border-radius:16px; max-width:1100px; margin:0 auto 3rem; }
+  .footer-hero-strip img { width:100%; height:100%; object-fit:cover; filter:brightness(0.5); }
+  .footer-hero-strip-overlay { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:1rem; }
+  .footer-hero-strip-overlay h3 { font-family:'Playfair Display',serif; font-size:1.6rem; color:white; margin-bottom:0.5rem; }
+  .footer-hero-strip-overlay p { color:rgba(255,255,255,0.7); font-size:0.9rem; }
+  .footer-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:2.5rem; max-width:1100px; margin:0 auto 3rem; }
+  .footer-brand-name { font-family:'Playfair Display',serif; font-size:1.4rem; color:#fff; margin-bottom:0.75rem; display:flex; align-items:center; gap:8px; }
+  .footer-logo { width:28px; height:28px; object-fit:contain; border-radius:4px; }
+  .footer-brand p { color:rgba(255,255,255,0.55); font-size:0.9rem; line-height:1.7; }
+  .footer-badges { margin-top:1rem; display:flex; gap:0.75rem; flex-wrap:wrap; }
+  .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.75rem; font-weight:600; }
+  .badge-gold { background:rgba(168,85,247,0.15); color:#c084fc; }
+  .badge-teal { background:rgba(58,170,116,0.15); color:var(--success2); }
+  .footer-col h4 { font-size:0.8rem; text-transform:uppercase; letter-spacing:0.1em; color:#fff; margin-bottom:1rem; }
+  .footer-col a { display:block; color:rgba(255,255,255,0.50); font-size:0.9rem; text-decoration:none; margin-bottom:0.5rem; cursor:pointer; transition:color 0.2s; }
+  .footer-col a:hover { color:var(--pink2); }
+  .footer-emergency { background:rgba(232,70,70,0.08); border:1px solid rgba(232,70,70,0.25); border-radius:12px; padding:1rem 1.25rem; }
+  .footer-emergency h4 { color:var(--danger); font-size:0.8rem; margin-bottom:0.5rem; letter-spacing:0.05em; }
+  .footer-emergency .num { font-family:'Playfair Display',serif; font-size:1.5rem; color:var(--danger); font-weight:700; }
+  .footer-emergency p { color:rgba(255,255,255,0.45); font-size:0.8rem; margin-top:4px; }
+  .footer-bottom { border-top:1px solid rgba(255,255,255,0.10); padding-top:1.5rem; max-width:1100px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+  .footer-bottom p { color:rgba(255,255,255,0.40); font-size:0.85rem; }
+  .footer-bottom .heart { color:var(--danger); }
+  .footer-badge { background:rgba(168,85,247,0.10); border:1px solid rgba(168,85,247,0.20); border-radius:20px; padding:4px 14px; font-size:0.78rem; color:#c084fc; }
+  .footer-logo { width:80px; height:80px; object-fit:contain; border-radius:6px; mix-blend-mode:normal; }
+
+</style>
+</head>
+<body>
+
+<nav>
+	<a class="nav-brand" href="index.html">
+	    <img class="nav-logo" src="/images/HerGuardian_logo_transparent.png" alt="HerGuardian Logo">
+	  </a> <div class="nav-links">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="start-walk.html">Start Walk</a>
+    <a href="tracking.html" class="active">Tracking</a>
+	<a href="nearby.html">Nearby Help</a>
+    <a href="contacts.html">Contacts</a>
+    <a href="walk-history.html">History</a>
+    <a href="complaint.html">Report</a>
+    <a href="profile.html">Profile</a>
+    <a href="sos.html" class="nav-sos">🚨 SOS</a>
+  </div>
+  <button class="logout-btn" onclick="logout()">Logout</button>
+</nav>
+
+<main>
+  <div class="page-wrapper">
+
+    <div class="no-walk" id="no-walk-state">
+      <div class="icon">🚶‍♀️</div>
+      <h3>No Active Walk</h3>
+      <p>Start a walk first to see live tracking</p>
+      <a href="start-walk.html"><img src="/images/HerGuardian_logo_final.png" alt="logo" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;"> Start Safe Walk</a>
+    </div>
+
+    <div id="active-walk-state" style="display:none;">
+
+      <div class="tracking-header">
+        <div>
+          <h1>📍 Live Tracking</h1>
+          <p id="route-display">Loading route...</p>
+        </div>
+        <div style="display:flex;gap:0.75rem;align-items:center;">
+          <div class="status-badge"><span class="blink">●</span> Active</div>
+          <a href="sos.html" class="nav-sos" style="text-decoration:none;">🚨 SOS</a>
+        </div>
+      </div>
+
+      <div class="tracking-map">
+        <div class="map-bg"></div>
+        <div class="map-grid"></div>
+        <div class="map-road-h" style="top:40%"></div>
+        <div class="map-road-h" style="top:70%"></div>
+        <div class="map-road-v" style="left:30%"></div>
+        <div class="map-road-v" style="left:65%"></div>
+        <div class="map-route"></div>
+        <div class="map-pin"></div>
+        <div class="map-dest"></div>
+        <div class="map-label">📡 GPS Signal: <span>Strong</span></div>
+        <div class="map-location" id="map-location-text">Getting location...</div>
+        <div class="map-dest-label">Destination: <span id="dest-km">—</span></div>
+      </div>
+
+  
+      <div class="walk-info-card">
+        <div class="walk-info-item">
+          <div class="walk-info-label">From</div>
+          <div class="walk-info-val" id="from-location">—</div>
+        </div>
+        <div class="walk-info-item">
+          <div class="walk-info-label">To</div>
+          <div class="walk-info-val" id="to-location">—</div>
+        </div>
+        <div class="walk-info-item">
+          <div class="walk-info-label">Started At</div>
+          <div class="walk-info-val" id="started-at">—</div>
+        </div>
+        <div class="walk-info-item">
+          <div class="walk-info-label">Status</div>
+          <div class="walk-info-val" style="color:var(--success)">🟢 Active</div>
+        </div>
+      </div>
+
+      <div class="tracking-stats">
+        <div class="track-stat">
+          <div class="track-val" id="elapsed-time">00:00</div>
+          <div class="track-lbl">Time Elapsed</div>
+        </div>
+        <div class="track-stat">
+          <div class="track-val" id="checkin-count">0</div>
+          <div class="track-lbl">Check-ins Done</div>
+        </div>
+        <div class="track-stat">
+          <div class="track-val" id="gps-status">📍</div>
+          <div class="track-lbl">GPS Status</div>
+        </div>
+      </div>
+
+      <div class="timer-card">
+        <div class="timer-label">⏳ Next Safety Check-in In</div>
+        <div class="timer-num" id="checkin-timer">10:00</div>
+        <div class="timer-sub">Check-in interval: Every 10 minutes</div>
+        <div class="timer-progress">
+          <div class="timer-bar" id="timer-bar" style="width:100%"></div>
+        </div>
+        <div class="timer-controls">
+          <button class="timer-btn safe" onclick="checkIn()">✅ I'm Safe Now</button>
+          <button class="timer-btn danger" onclick="window.location.href='sos.html'">🚨 Need Help</button>
+        </div>
+      </div>
+
+      <div class="quick-actions">
+        <a class="action-btn" href="nearby.html">
+          <span class="action-icon">🏥</span>Nearby Help
+        </a>
+        <button class="action-btn" onclick="triggerFakeCall()">
+          <span class="action-icon">📞</span>Fake Call
+        </button>
+        <button class="action-btn safe" onclick="endWalkSafe()" style="border-color:rgba(76,175,122,0.3);color:var(--success)">
+          <span class="action-icon">✅</span>End Walk Safely
+        </button>
+        <a class="action-btn danger" href="sos.html">
+          <span class="action-icon">🚨</span>Emergency
+        </a>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<div class="overlay" id="checkin-overlay">
+  <div class="overlay-card">
+    <div class="overlay-icon">✅</div>
+    <h3>Safety Check-in</h3>
+    <p>Are you safe? Confirm your check-in to let your contacts know you're okay.</p>
+    <button class="overlay-btn" onclick="confirmCheckIn()">✅ Yes, I'm Safe!</button>
+    <button class="overlay-btn-outline" onclick="closeOverlay()">Not Now</button>
+  </div>
+</div>
+
+<div class="overlay" id="fakecall-overlay">
+  <div class="overlay-card">
+    <div class="overlay-icon">📞</div>
+    <h3>Incoming Call</h3>
+    <p style="color:var(--gold);font-size:1.1rem;font-weight:600;">Mom calling...</p>
+    <p>This is a fake call to help you escape an uncomfortable situation.</p>
+    <button class="overlay-btn" onclick="closeFakeCall()" style="background:var(--danger)">📞 Answer</button>
+    <button class="overlay-btn-outline" onclick="closeFakeCall()">Decline</button>
+  </div>
+</div>
+<footer>
+  <div class="footer-hero-strip">
+    <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1400&q=80" alt="Women safety community">
+    <div class="footer-hero-strip-overlay">
+      <h3>Walk Safe. Walk Fearless.</h3>
+      <p>Emergency: <strong style="color:var(--gold)">112</strong> &nbsp;·&nbsp; Women Helpline: <strong style="color:var(--gold)">1091</strong></p>
+    </div>
+  </div>
+
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-brand-name">
+        <img class="footer-logo" src="/images/HerGuardian_logo_final.png" alt="Her Guardian Logo">
+      </div>
+      <p>Your digital safety companion for every night & day walk. Real-time tracking, smart check-ins, and instant emergency response — because every woman deserves to walk fearlessly.</p>
+      <div class="footer-badges">
+        <span class="badge badge-gold">🔐 Encrypted</span>
+        <span class="badge badge-teal">📡 Real-time GPS</span>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Safety Features</h4>
+      <a href="start-walk.html">🚶‍♀️ Start Safe Walk</a>
+      <a href="tracking.html">📍 Live Tracking</a>
+      <a href="sos.html">🚨 Emergency SOS</a>
+      <a href="nearby.html">🏥 Nearby Help</a>
+	  <a href="about.html">ℹ️ About</a>
+    </div>
+
+    <div class="footer-col">
+      <h4>My Account</h4>
+      <a href="dashboard.html">📊 Dashboard</a>
+      <a href="contacts.html">👥 My Contacts</a>
+      <a href="history.html">📄 Walk History</a>
+      <a href="Complaint.html">📝 File Report</a>
+      <a href="profile.html">👤 My Profile</a>
+       </div>
+
+    <div class="footer-col">
+      <h4>Emergency</h4>
+      <div class="footer-emergency">
+        <h4>🚨 WOMEN HELPLINE</h4>
+        <div class="num">1091</div>
+        <p>24/7 · Free · Confidential</p>
+      </div>
+      <div class="footer-emergency" style="margin-top:0.75rem;">
+        <h4>🚔 EMERGENCY</h4>
+        <div class="num">112</div>
+        <p>Police · Ambulance · Fire</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>© 2026 HerGuardian · Built with <span class="heart">♥</span> for women's safety ·</p>
+    <div class="footer-badge"><img src="/images/HerGuardian_logo_final.png" alt="logo" style="width:30x;height:30px;object-fit:contain;vertical-align:middle;margin-right:4px;"> Trusted Safety Platform</div>
+  </div>
+</footer>
+
+<script>
+  
+  const userId       = sessionStorage.getItem('userId');
+  const token        = sessionStorage.getItem('token') || '';
+  const currentWalkId = sessionStorage.getItem('currentWalkId');
+
+  if (!userId) window.location.href = 'login.html';
+
+  function logout() {
+    sessionStorage.clear();
+    window.location.href = 'login.html';
+  }
+
+  function authHeaders() {
+    const h = {};
+    if (token) h['Authorization'] = 'Bearer ' + token;
+    return h;
+  }
+
+  let checkinCount     = 0;
+  let elapsedSeconds   = 0;
+  let checkinSeconds   = 600; // 10 min
+  let checkinRemaining = 600;
+  let timerInterval    = null;
+  let startTimestamp   = null;
+
+  function initTracking() {
+    if (!currentWalkId) {
+      document.getElementById('no-walk-state').style.display    = 'block';
+      document.getElementById('active-walk-state').style.display = 'none';
+      return;
+    }
+    document.getElementById('no-walk-state').style.display    = 'none';
+    document.getElementById('active-walk-state').style.display = 'block';
+
+    loadWalkDetails();
+    startTimestamp = Date.now();
+    timerInterval  = setInterval(updateTimers, 1000);
+    getGPS();
+  }
+
+  function loadWalkDetails() {
+    fetch(`/api/walk/history/${userId}`, { headers: authHeaders() })
+    .then(res => res.json())
+    .then(walks => {
+      const walk = walks.find(w => String(w.id) === String(currentWalkId));
+      if (walk) {
+        document.getElementById('route-display').textContent =
+          `${walk.startLocation || 'Unknown'} → ${walk.destination || 'Unknown'}`;
+        document.getElementById('from-location').textContent = walk.startLocation || '—';
+        document.getElementById('to-location').textContent   = walk.destination   || '—';
+        document.getElementById('started-at').textContent    = walk.startTime
+          ? new Date(walk.startTime).toLocaleTimeString('en-IN') : '—';
+      }
+    }).catch(() => {});
+  }
+
+  function updateTimers() {
+    elapsedSeconds = Math.floor((Date.now() - startTimestamp) / 1000);
+    const m = Math.floor(elapsedSeconds / 60).toString().padStart(2,'0');
+    const s = (elapsedSeconds % 60).toString().padStart(2,'0');
+    document.getElementById('elapsed-time').textContent = `${m}:${s}`;
+
+    checkinRemaining--;
+    if (checkinRemaining <= 0) {
+      checkinRemaining = checkinSeconds;
+      showCheckinOverlay();
+    }
+    const cm = Math.floor(checkinRemaining / 60).toString().padStart(2,'0');
+    const cs = (checkinRemaining % 60).toString().padStart(2,'0');
+    document.getElementById('checkin-timer').textContent = `${cm}:${cs}`;
+    document.getElementById('timer-bar').style.width = `${(checkinRemaining / checkinSeconds) * 100}%`;
+  }
+
+  function getGPS() {
+    if (!navigator.geolocation) {
+      document.getElementById('gps-status').textContent         = '🔴';
+      document.getElementById('map-location-text').textContent  = 'GPS not supported';
+      return;
+    }
+    navigator.geolocation.watchPosition(
+      pos => {
+        const lat = pos.coords.latitude.toFixed(4);
+        const lng = pos.coords.longitude.toFixed(4);
+        document.getElementById('map-location-text').textContent = `📍 ${lat}° N, ${lng}° E`;
+        document.getElementById('gps-status').textContent        = '🟢';
+      },
+      () => {
+        document.getElementById('gps-status').textContent        = '🔴';
+        document.getElementById('map-location-text').textContent = 'GPS not available';
+      }
+    );
+  }
+
+  function showCheckinOverlay() {
+    document.getElementById('checkin-overlay').classList.add('show');
+  }
+  function confirmCheckIn() {
+    checkinCount++;
+    document.getElementById('checkin-count').textContent = checkinCount;
+    closeOverlay();
+  }
+  function checkIn()    { showCheckinOverlay(); }
+  function closeOverlay() { document.getElementById('checkin-overlay').classList.remove('show'); }
+
+  function triggerFakeCall() {
+    document.getElementById('fakecall-overlay').classList.add('show');
+    if (navigator.vibrate) navigator.vibrate([500, 200, 500]);
+  }
+  function closeFakeCall() {
+    document.getElementById('fakecall-overlay').classList.remove('show');
+  }
+
+  function endWalkSafe() {
+    if (!currentWalkId) return;
+    fetch(`/api/walk/end/${currentWalkId}?status=completed`, {
+      method: 'PUT',
+      headers: authHeaders()
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        clearInterval(timerInterval);
+        sessionStorage.removeItem('currentWalkId');
+        sessionStorage.removeItem('walkStartTime');
+        window.location.href = 'dashboard.html';
+      }
+    })
+    .catch(() => alert('Server error! Please try again.'));
+  }
+
+  initTracking();
+</script>
+
+<script src="nav.js"></script>
+</body>
+</html>

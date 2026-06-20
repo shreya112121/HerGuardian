@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nearby Help – HerGuardian</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#ffffff; --bg2:#faf7ff; --bg3:#f3eeff; --bg4:#ede4ff;
+    --card:#ffffff; --surface:#f8f4ff;
+    --purple:#6B21A8; --purple2:#7C3AED; --purple3:#A855F7; --purple-light:#f3eeff;
+    --pink:#EC4899; --pink2:#db2777; --pink-light:#fdf2f8;
+    --text:#1a0a2e; --text2:#4a3860; --text3:#7c6a92;
+    --border:rgba(107,33,168,0.10); --border2:rgba(107,33,168,0.22);
+    --danger:#e84646; --success:#3aaa74; --success2:#5ec48e;
+    --sos:#e84646; --gold:#6B21A8; --teal:#3aaa74;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; }
+
+  nav {
+    position:fixed; top:0; left:0; right:0; z-index:1000;
+    background:rgba(0,0,0,0.3); backdrop-filter:blur(8px);
+    border-bottom:1px solid rgba(255,255,255,0.2);
+    padding:0 2rem; height:64px; display:flex; align-items:center; justify-content:space-between;
+    transition:0.3s;
+  }
+  nav.scrolled { background:rgba(255,255,255,0.98); box-shadow:0 2px 20px rgba(107,33,168,0.08); }
+  .nav-brand { display:flex; align-items:center; gap:10px; text-decoration:none; }
+  .nav-logo { width:300px; height:300px; object-fit:contain; border-radius:6px; }
+  .nav-links { display:flex; align-items:center; gap:4px; }
+  .nav-links a { color:black; font-size:0.82rem; padding:6px 13px; border-radius:6px; text-decoration:none; transition:all 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color:var(--purple); background:var(--purple-light); }
+  .nav-login { color:#2E003E !important; border:1px solid #2E003E !important; border-radius:20px !important; padding:5px 16px !important; }
+  .nav-register { background:linear-gradient(135deg,var(--purple) 0%,var(--pink) 100%) !important; color:#fff !important; font-weight:600 !important; border-radius:20px !important; padding:5px 16px !important; }
+  .nav-avatar { width:34px; height:34px; border-radius:50%; background:var(--purple-light); border:1.5px solid var(--border2); display:flex; align-items:center; justify-content:center; color:var(--purple); font-size:1rem; text-decoration:none; margin:0 2px; }
+  .nav-sos { background:var(--sos); color:#fff !important; font-weight:700 !important; font-size:0.8rem !important; padding:7px 16px !important; border-radius:20px !important; margin-left:4px; animation:pulse-sos 2s infinite; }
+  @keyframes pulse-sos { 0%,100%{ box-shadow:0 0 0 0 rgba(232,70,70,0.5); } 50%{ box-shadow:0 0 0 8px rgba(232,70,70,0); } }
+  .nav-logged-in { display:none; }
+  .nav-logged-out { display:contents; }
+
+  main { padding-top:64px; min-height:100vh; }
+  .page-wrapper { max-width:800px; margin:0 auto; padding:2.5rem 2rem; }
+  .page-header { margin-bottom:2rem; }
+  .page-header h1 { font-family:'Playfair Display',serif; font-size:2rem; color:var(--text); }
+  .page-header p { color:var(--text3); font-size:0.88rem; margin-top:4px; }
+
+  .location-banner { background:var(--card); border:1px solid var(--border2); border-radius:14px; padding:1.25rem 1.5rem; margin-bottom:2rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; box-shadow:0 1px 6px rgba(107,33,168,0.06); }
+  .location-text { color:var(--text2); font-size:0.88rem; }
+  .location-text strong { color:var(--purple); }
+  .btn-location { background:linear-gradient(135deg,var(--purple) 0%,var(--pink) 100%); color:#fff; border:none; font-family:'DM Sans',sans-serif; font-weight:600; font-size:0.82rem; padding:8px 16px; border-radius:10px; cursor:pointer; transition:all 0.2s; }
+  .btn-location:hover { opacity:0.88; }
+
+  .category-tabs { display:flex; gap:0.5rem; margin-bottom:1.5rem; flex-wrap:wrap; }
+  .tab { background:var(--card); border:1px solid var(--border); border-radius:20px; padding:8px 18px; font-size:0.82rem; color:var(--text2); cursor:pointer; transition:all 0.2s; }
+  .tab:hover { border-color:var(--border2); color:var(--purple); }
+  .tab.active { background:var(--purple-light); border-color:var(--purple); color:var(--purple); }
+
+  .nearby-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  @media(max-width:600px) { .nearby-grid { grid-template-columns:1fr; } }
+
+  .nearby-card { background:var(--card); border:1px solid var(--border); border-radius:14px; overflow:hidden; transition:all 0.2s; animation:fadeIn 0.3s ease; box-shadow:0 1px 6px rgba(107,33,168,0.05); }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+  .nearby-card:hover { border-color:var(--border2); transform:translateY(-2px); box-shadow:0 4px 16px rgba(107,33,168,0.10); }
+  .nearby-card-header { padding:1rem 1.25rem 0.75rem; display:flex; align-items:flex-start; gap:0.75rem; }
+  .nearby-icon { width:42px; height:42px; border-radius:10px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:1.4rem; }
+  .icon-police   { background:rgba(58,170,116,0.12); }
+  .icon-hospital { background:rgba(232,70,70,0.10); }
+  .icon-safe     { background:var(--purple-light); }
+  .icon-fire     { background:rgba(255,140,0,0.12); }
+  .nearby-info { flex:1; }
+  .nearby-name { font-weight:600; font-size:0.92rem; color:var(--text); }
+  .nearby-address { font-size:0.78rem; color:var(--text3); margin-top:3px; }
+  .nearby-distance { font-size:0.75rem; color:var(--purple); margin-top:4px; font-weight:600; }
+  .nearby-card-footer { padding:0.75rem 1.25rem; border-top:1px solid var(--border); display:flex; gap:0.5rem; }
+  .btn-call { flex:1; background:rgba(58,170,116,0.10); border:1px solid rgba(58,170,116,0.25); color:var(--success); font-family:'DM Sans',sans-serif; font-size:0.78rem; font-weight:600; padding:7px; border-radius:8px; cursor:pointer; transition:all 0.2s; text-decoration:none; text-align:center; }
+  .btn-call:hover { background:rgba(58,170,116,0.18); }
+  .btn-directions { flex:1; background:var(--purple-light); border:1px solid var(--border2); color:var(--purple); font-family:'DM Sans',sans-serif; font-size:0.78rem; font-weight:600; padding:7px; border-radius:8px; cursor:pointer; transition:all 0.2s; text-decoration:none; text-align:center; }
+  .btn-directions:hover { background:var(--bg3); }
+
+  .loading-box { grid-column:1/-1; text-align:center; padding:3rem 1rem; color:var(--text3); }
+  .loading-spinner { width:40px; height:40px; border:3px solid var(--border2); border-top-color:var(--purple); border-radius:50%; animation:spin 0.8s linear infinite; margin:0 auto 1rem; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .status-text { color:var(--text3); font-size:0.88rem; text-align:center; padding:2rem; grid-column:1/-1; }
+
+  .emergency-strip { background:rgba(232,70,70,0.06); border:1px solid rgba(232,70,70,0.2); border-radius:14px; padding:1.25rem 1.5rem; margin-top:2rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; }
+  .emergency-strip p { color:var(--text2); font-size:0.88rem; }
+  .emergency-btns { display:flex; gap:0.75rem; flex-wrap:wrap; }
+  .btn-emergency { background:var(--danger); color:white; border:none; font-family:'DM Sans',sans-serif; font-weight:700; font-size:0.85rem; padding:8px 16px; border-radius:10px; cursor:pointer; text-decoration:none; transition:all 0.2s; }
+  .btn-emergency:hover { opacity:0.9; }
+
+  footer { background:var(--text); border-top:1px solid var(--border); padding:4rem 2rem 2rem; }
+  .footer-hero-strip { height:180px; overflow:hidden; position:relative; border-radius:16px; max-width:1100px; margin:0 auto 3rem; }
+  .footer-hero-strip img { width:100%; height:100%; object-fit:cover; filter:brightness(0.5); }
+  .footer-hero-strip-overlay { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:1rem; }
+  .footer-hero-strip-overlay h3 { font-family:'Playfair Display',serif; font-size:1.6rem; color:white; margin-bottom:0.5rem; }
+  .footer-hero-strip-overlay p { color:rgba(255,255,255,0.7); font-size:0.9rem; }
+  .footer-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:2.5rem; max-width:1100px; margin:0 auto 3rem; }
+  .footer-logo { width:80px; height:80px; object-fit:contain; border-radius:6px; }
+  .footer-brand p { color:rgba(255,255,255,0.55); font-size:0.9rem; line-height:1.7; }
+  .footer-badges { margin-top:1rem; display:flex; gap:0.75rem; flex-wrap:wrap; }
+  .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.75rem; font-weight:600; }
+  .badge-gold { background:rgba(168,85,247,0.15); color:#c084fc; }
+  .badge-teal { background:rgba(58,170,116,0.15); color:var(--success2); }
+  .footer-col h4 { font-size:0.8rem; text-transform:uppercase; letter-spacing:0.1em; color:#fff; margin-bottom:1rem; }
+  .footer-col a { display:block; color:rgba(255,255,255,0.50); font-size:0.9rem; text-decoration:none; margin-bottom:0.5rem; transition:color 0.2s; }
+  .footer-col a:hover { color:var(--pink2); }
+  .footer-emergency { background:rgba(232,70,70,0.08); border:1px solid rgba(232,70,70,0.25); border-radius:12px; padding:1rem 1.25rem; }
+  .footer-emergency h4 { color:var(--danger); font-size:0.8rem; margin-bottom:0.5rem; }
+  .footer-emergency .num { font-family:'Playfair Display',serif; font-size:1.5rem; color:var(--danger); font-weight:700; }
+  .footer-emergency p { color:rgba(255,255,255,0.45); font-size:0.8rem; margin-top:4px; }
+  .footer-bottom { border-top:1px solid rgba(255,255,255,0.10); padding-top:1.5rem; max-width:1100px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+  .footer-bottom p { color:rgba(255,255,255,0.40); font-size:0.85rem; }
+  .footer-bottom .heart { color:var(--danger); }
+  .footer-badge { background:rgba(168,85,247,0.10); border:1px solid rgba(168,85,247,0.20); border-radius:20px; padding:4px 14px; font-size:0.78rem; color:#c084fc; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html">
+    <img class="nav-logo" src="/images/HerGuardian_logo_transparent.png" alt="HerGuardian Logo">
+  </a>
+  <div class="nav-links">
+    <a href="nearby.html" class="active">Nearby Help</a>
+    <a href="sos.html" class="nav-sos">🚨 SOS</a>
+    <span class="nav-logged-out">
+      <a href="about.html">About</a>
+      <a href="login.html" class="nav-login">Login</a>
+      <a href="register.html" class="nav-register">Register</a>
+    </span>
+    <span class="nav-logged-in">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="start-walk.html">Start Walk</a>
+      <a href="#" class="nav-login" id="nav-logout-btn">Logout</a>
+    </span>
+  </div>
+</nav>
+
+<main>
+  <div class="page-wrapper">
+    <div class="page-header">
+      <h1>🏥 Nearby Help</h1>
+      <p>Find police stations, hospitals and safe zones near you</p>
+    </div>
+
+    <div class="location-banner">
+      <div class="location-text">📍 Location: <strong id="location-display">Getting your location...</strong></div>
+      <button class="btn-location" onclick="getLocation()">🔄 Refresh Location</button>
+    </div>
+
+    <div class="category-tabs">
+      <div class="tab active" onclick="filterCategory('all', this)">🗺️ All</div>
+      <div class="tab" onclick="filterCategory('police', this)">👮 Police</div>
+      <div class="tab" onclick="filterCategory('hospital', this)">🏥 Hospital</div>
+      <div class="tab" onclick="filterCategory('safe', this)">🏪 Safe Zone</div>
+      <div class="tab" onclick="filterCategory('fire', this)">🚒 Fire Station</div>
+    </div>
+
+    <div class="nearby-grid" id="nearby-grid">
+      <div class="loading-box">
+        <div class="loading-spinner"></div>
+        <p>Getting your location...</p>
+      </div>
+    </div>
+
+    <div class="emergency-strip">
+      <p>🚨 Need immediate help? Call directly:</p>
+      <div class="emergency-btns">
+        <a class="btn-emergency" href="tel:112">📞 112</a>
+        <a class="btn-emergency" href="tel:1091">👩 1091</a>
+        <a class="btn-emergency" href="tel:100">🚔 100</a>
+        <a class="btn-emergency" href="tel:108">🚑 108</a>
+        <a class="btn-emergency" href="tel:101">🚒 101</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-hero-strip">
+    <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1400&q=80" alt="Women safety community">
+    <div class="footer-hero-strip-overlay">
+      <h3>Walk Safe. Walk Fearless.</h3>
+      <p>Emergency: <strong style="color:var(--gold)">112</strong> &nbsp;·&nbsp; Women Helpline: <strong style="color:var(--gold)">1091</strong></p>
+    </div>
+  </div>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <img class="footer-logo" src="/images/HerGuardian_logo_final.png" alt="Her Guardian Logo">
+      <p style="margin-top:0.75rem;">Your digital safety companion for every night & day walk. Real-time tracking, smart check-ins, and instant emergency response — because every woman deserves to walk fearlessly.</p>
+      <div class="footer-badges">
+        <span class="badge badge-gold">🔐 Encrypted</span>
+        <span class="badge badge-teal">📡 Real-time GPS</span>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Safety Features</h4>
+      <a href="start-walk.html">🚶‍♀️ Start Safe Walk</a>
+      <a href="tracking.html">📍 Live Tracking</a>
+      <a href="sos.html">🚨 Emergency SOS</a>
+      <a href="nearby.html">🏥 Nearby Help</a>
+	  <a href="about.html">ℹ️ About</a>
+    </div>
+    <div class="footer-col">
+      <h4>My Account</h4>
+      <a href="dashboard.html">📊 Dashboard</a>
+      <a href="contacts.html">👥 My Contacts</a>
+      <a href="walk-history.html">📄 Walk History</a>
+      <a href="Complaint.html">📝 File Report</a>
+      <a href="profile.html">👤 My Profile</a>
+    </div>
+    <div class="footer-col">
+      <h4>Emergency</h4>
+      <div class="footer-emergency">
+        <h4>🚨 WOMEN HELPLINE</h4>
+        <div class="num">1091</div>
+        <p>24/7 · Free · Confidential</p>
+      </div>
+      <div class="footer-emergency" style="margin-top:0.75rem;">
+        <h4>🚔 EMERGENCY</h4>
+        <div class="num">112</div>
+        <p>Police · Ambulance · Fire</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+      <p>© 2026 HerGuardian · Built with <span class="heart">♥</span> for women's safety ·</p>
+      <div class="footer-badge"><img src="/images/HerGuardian_logo_final.png" alt="logo" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:4px;"> Trusted Safety Platform</div>
+    </div>
+</footer>
+
+<script>
+(function () {
+  const loggedIn = !!sessionStorage.getItem('userId');
+  document.querySelectorAll('.nav-logged-in').forEach(el  => el.style.display = loggedIn ? 'contents' : 'none');
+  document.querySelectorAll('.nav-logged-out').forEach(el => el.style.display = loggedIn ? 'none' : 'contents');
+  const logoutBtn = document.getElementById('nav-logout-btn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      sessionStorage.removeItem('userId');
+      sessionStorage.removeItem('fullName');
+      sessionStorage.removeItem('token');
+      window.location.href = 'index.html';
+    });
+  }
+})();
+</script>
+
+<script>
+let userLat = null, userLng = null, currentCategory = 'all';
+let allPlaces = [];
+
+const categoryConfig = {
+  police:   { icon:'👮', iconClass:'icon-police',   label:'Police Station',  osmKey:'amenity', osmVal:'police' },
+  hospital: { icon:'🏥', iconClass:'icon-hospital', label:'Hospital',        osmKey:'amenity', osmVal:'hospital' },
+  safe:     { icon:'🏪', iconClass:'icon-safe',     label:'Safe Zone',       osmKey:'amenity', osmVal:'pharmacy' },
+  fire:     { icon:'🚒', iconClass:'icon-fire',     label:'Fire Station',    osmKey:'amenity', osmVal:'fire_station' },
+};
+
+function getDistance(lat1, lng1, lat2, lng2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return (R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))).toFixed(1);
+}
+
+function showLoading(msg) {
+  document.getElementById('nearby-grid').innerHTML = `
+    <div class="loading-box">
+      <div class="loading-spinner"></div>
+      <p>${msg}</p>
+    </div>`;
+}
+
+function showError(msg) {
+  document.getElementById('nearby-grid').innerHTML = `<div class="status-text">${msg}</div>`;
+}
+
+async function fetchPlaces(lat, lng) {
+  showLoading('Fetching nearby places...');
+
+  const radius = 3000; 
+
+  
+  const query = `
+    [out:json][timeout:25];
+    (
+      node["amenity"="police"](around:${radius},${lat},${lng});
+      node["amenity"="hospital"](around:${radius},${lat},${lng});
+      node["amenity"="clinic"](around:${radius},${lat},${lng});
+      node["amenity"="pharmacy"](around:${radius},${lat},${lng});
+      node["amenity"="fire_station"](around:${radius},${lat},${lng});
+      node["amenity"="community_centre"](around:${radius},${lat},${lng});
+      way["amenity"="police"](around:${radius},${lat},${lng});
+      way["amenity"="hospital"](around:${radius},${lat},${lng});
+      way["amenity"="fire_station"](around:${radius},${lat},${lng});
+    );
+    out center;
+  `;
+
+  try {
+    const res = await fetch('https://overpass-api.de/api/interpreter', {
+      method: 'POST',
+      body: query
+    });
+
+    if (!res.ok) throw new Error('API error');
+    const data = await res.json();
+
+    allPlaces = data.elements.map(el => {
+      const nodeLat = el.lat || el.center?.lat;
+      const nodeLng = el.lon || el.center?.lon;
+      const amenity = el.tags?.amenity || '';
+
+      let category = 'safe';
+      let icon = '🏪';
+      let iconClass = 'icon-safe';
+
+      if (amenity === 'police') { category = 'police'; icon = '👮'; iconClass = 'icon-police'; }
+      else if (amenity === 'hospital' || amenity === 'clinic') { category = 'hospital'; icon = '🏥'; iconClass = 'icon-hospital'; }
+      else if (amenity === 'fire_station') { category = 'fire'; icon = '🚒'; iconClass = 'icon-fire'; }
+
+      const name = el.tags?.name || el.tags?.['name:en'] || `${amenity.replace('_',' ')} (Unnamed)`;
+      const address = [
+        el.tags?.['addr:street'],
+        el.tags?.['addr:suburb'] || el.tags?.['addr:city']
+      ].filter(Boolean).join(', ') || 'Nearby location';
+
+      const phone = el.tags?.phone || el.tags?.['contact:phone'] || '';
+
+      return {
+        id: el.id,
+        name,
+        address,
+        phone,
+        category,
+        icon,
+        iconClass,
+        lat: nodeLat,
+        lng: nodeLng,
+        distance: getDistance(lat, lng, nodeLat, nodeLng)
+      };
+    }).filter(p => p.lat && p.lng);
+
+    renderPlaces();
+
+  } catch (err) {
+    showError('⚠️ Could not fetch nearby places. Check your internet connection and try again.');
+  }
+}
+
+function renderPlaces() {
+  const grid = document.getElementById('nearby-grid');
+
+  let filtered = currentCategory === 'all'
+    ? allPlaces
+    : allPlaces.filter(p => p.category === currentCategory);
+
+  filtered = filtered
+    .sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance))
+    .slice(0, 20); 
+
+  if (!filtered.length) {
+    grid.innerHTML = '<div class="status-text">😔 No places found nearby. Try increasing search area.</div>';
+    return;
+  }
+
+  grid.innerHTML = filtered.map(p => `
+    <div class="nearby-card">
+      <div class="nearby-card-header">
+        <div class="nearby-icon ${p.iconClass}">${p.icon}</div>
+        <div class="nearby-info">
+          <div class="nearby-name">${p.name}</div>
+          <div class="nearby-address">📍 ${p.address}</div>
+          <div class="nearby-distance">📏 ${p.distance} km away</div>
+        </div>
+      </div>
+      <div class="nearby-card-footer">
+        <a class="btn-directions" href="https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}" target="_blank">🗺️ Directions</a>
+      </div>
+    </div>`).join('');
+}
+
+function filterCategory(category, el) {
+  currentCategory = category;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  if (allPlaces.length > 0) {
+    renderPlaces();
+  } else if (userLat) {
+    fetchPlaces(userLat, userLng);
+  }
+}
+
+function getLocation() {
+  document.getElementById('location-display').textContent = 'Getting location...';
+  showLoading('Getting your location...');
+
+  if (!navigator.geolocation) {
+    document.getElementById('location-display').textContent = 'Geolocation not supported';
+    showError('⚠️ Your browser does not support location.');
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      userLat = pos.coords.latitude;
+      userLng = pos.coords.longitude;
+      document.getElementById('location-display').textContent =
+        `${userLat.toFixed(4)}° N, ${userLng.toFixed(4)}° E`;
+      fetchPlaces(userLat, userLng);
+    },
+    err => {
+      document.getElementById('location-display').textContent = 'Location denied — using default';
+    
+      userLat = 18.5196; userLng = 73.8553;
+      fetchPlaces(userLat, userLng);
+    },
+    { enableHighAccuracy: true, timeout: 10000 }
+  );
+}
+
+getLocation();
+</script>
+
+<script src="nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emergency SOS – HerGuardian</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+	@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@400;500;700&display=swap');
+  :root {
+    --bg:            #ffffff;
+    --bg2:           #faf7ff;
+    --bg3:           #f3eeff;
+    --bg4:           #ede8ff;
+    --surface:       #f8f4ff;
+    --card:          #ffffff;
+    --purple:        #6B21A8;
+    --purple2:       #7C3AED;
+    --purple3:       #A855F7;
+    --purple-light:  #f3eeff;
+
+    --pink:          #EC4899;
+    --pink2:         #db2777;
+    --pink-light:    #fdf2f8;
+
+    --text:          #1a0a2e;
+    --text2:         #4a3860;
+    --text3:         #7c6a92;
+
+    --accent:        #6B21A8;
+    --accent2:       #7C3AED;
+    --accent3:       #A855F7;
+
+    --border:        rgba(107,33,168,0.10);
+    --border2:       rgba(107,33,168,0.22);
+    --border3:       rgba(236,72,153,0.20);
+
+    --nav-bg:        rgba(255,255,255,0.92);
+
+    --danger:        #e84646;
+    --danger2:       #ff6b6b;
+    --success:       #3aaa74;
+    --success2:      #5ec48e;
+    --warning:       #f5a623;
+    --sos:           #e84646;
+    --sos-hover:     #cc3333;
+
+    --gold:          #6B21A8;
+    --gold2:         #7C3AED;
+    --gold3:         #A855F7;
+    --navy:          #1a0a2e;
+    --navy2:         #faf7ff;
+    --navy3:         #f3eeff;
+    --navy4:         #f8f4ff;
+    --teal:          #3aaa74;
+    --rose:          #e84646;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; }
+
+  nav { position:fixed; top:0; left:0; right:0; z-index:1000; background:rgba(0,0,0,0.3); backdrop-filter:blur(8px); border-bottom:1px solid rgba(255,255,255,0.2); padding:0 2rem; height:64px; display:flex; align-items:center; justify-content:space-between; }
+  nav.scrolled {
+    background: rgba(255,255,255,0.98);
+    box-shadow: 0 2px 20px rgba(107,33,168,0.08);
+  }
+  .nav-brand { display:flex; align-items:center; gap:10px; font-family:'Playfair Display',serif; font-size:1.2rem; color:var(--purple); text-decoration:none; }
+  .nav-links { display:flex; align-items:center; gap:4px; }
+  .nav-links a { color:black; font-size:0.82rem; padding:6px 13px; border-radius:6px; text-decoration:none; transition:all 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color:var(--purple); background:var(--purple-light); }
+  .nav-login { color:#2E003E !important; border:1px solid #2E003E !important; border-radius:20px !important; padding:5px 16px !important; }
+  .nav-login:hover { background:var(--purple-light) !important; }
+  .nav-register { background:linear-gradient(135deg, var(--purple) 0%, var(--pink) 100%) !important; color:#fff !important; font-weight:600 !important; border-radius:20px !important; padding:5px 16px !important; border:none !important; }
+  .nav-register:hover { opacity:0.88; transform:translateY(-1px); }
+  .nav-avatar { width:34px; height:34px; border-radius:50%; background:var(--purple-light); border:1.5px solid var(--border2); display:flex; align-items:center; justify-content:center; color:var(--purple); font-size:1rem; text-decoration:none; margin:0 2px; transition:all 0.2s; }
+  .nav-avatar:hover { background:var(--bg3); }
+  .nav-sos { background:var(--sos) !important; color:#fff !important; font-weight:700 !important; font-size:0.8rem !important; padding:7px 16px !important; border-radius:20px !important; margin-left:4px; animation:pulse-sos 2s infinite; }
+  @keyframes pulse-sos { 0%,100%{ box-shadow:0 0 0 0 rgba(232,70,70,0.5); } 50%{ box-shadow:0 0 0 8px rgba(232,70,70,0); } }
+  .nav-logged-in { display:none; }
+  .nav-logged-out { display:contents; }
+  .nav-logo { width:300px; height:300px; object-fit:contain; border-radius:6px; mix-blend-mode:normal; }
+
+  main { padding-top:64px; min-height:100vh; }
+  .page-wrapper { max-width:700px; margin:0 auto; padding:2.5rem 2rem; text-align:center; }
+
+  .sos-banner { background:rgba(232,70,70,0.06); border:1px solid rgba(232,70,70,0.2); border-radius:14px; padding:1rem 1.5rem; margin-bottom:2rem; display:flex; align-items:center; justify-content:center; gap:0.75rem; color:var(--text2); font-size:0.9rem; }
+  .sos-header { margin-bottom:2rem; }
+  .sos-header h1 { font-family:'Playfair Display',serif; font-size:2.2rem; color:var(--danger); }
+  .sos-header p { color:var(--text2); font-size:0.92rem; margin-top:0.5rem; }
+
+  .sos-btn-wrap { margin:2rem 0; }
+  .sos-big { width:180px; height:180px; border-radius:50%; background:radial-gradient(circle, var(--danger) 0%, #9b1f1f 100%); border:6px solid rgba(232,70,70,0.4); display:flex; align-items:center; justify-content:center; flex-direction:column; margin:0 auto; cursor:pointer; transition:all 0.2s; animation:sos-pulse 1.5s infinite; }
+  @keyframes sos-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(232,70,70,0.5)} 50%{box-shadow:0 0 0 24px rgba(232,70,70,0)} }
+  .sos-big:hover { transform:scale(1.05); }
+  .sos-big.triggered { background:radial-gradient(circle, #ff6b6b 0%, var(--danger) 100%); animation:sos-pulse-fast 0.8s infinite; }
+  @keyframes sos-pulse-fast { 0%,100%{box-shadow:0 0 0 0 rgba(232,70,70,0.7)} 50%{box-shadow:0 0 0 30px rgba(232,70,70,0)} }
+  .sos-text { font-family:'Playfair Display',serif; font-size:2.5rem; font-weight:900; color:white; }
+  .sos-sub { font-size:0.72rem; color:rgba(255,255,255,0.7); margin-top:4px; letter-spacing:0.05em; }
+
+  .location-status { background:var(--surface); border:1px solid rgba(232,70,70,0.25); border-radius:12px; padding:1.25rem; margin:1.5rem 0; text-align:left; }
+  .status-live { color:var(--danger); font-weight:600; font-size:0.9rem; display:flex; align-items:center; gap:6px; justify-content:center; margin-bottom:0.5rem; }
+  .blink { animation:blink 0.8s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  .location-text { color:var(--text2); font-size:0.82rem; text-align:center; }
+
+  .contacts-notified { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:1.25rem; margin-bottom:1.5rem; text-align:left; }
+  .contacts-notified h3 { font-size:0.82rem; letter-spacing:0.06em; color:var(--text3); text-transform:uppercase; margin-bottom:0.75rem; }
+  .notified-item { display:flex; justify-content:space-between; align-items:center; padding:0.5rem 0; border-bottom:1px solid var(--border); font-size:0.9rem; }
+  .notified-item:last-child { border-bottom:none; }
+  .badge-notified { font-size:0.75rem; font-weight:600; padding:3px 10px; border-radius:20px; background:rgba(58,170,116,0.12); color:var(--success); }
+  .badge-alerting { font-size:0.75rem; font-weight:600; padding:3px 10px; border-radius:20px; background:rgba(232,70,70,0.10); color:var(--danger); animation:blink 1s infinite; }
+
+  .instructions { background:rgba(232,70,70,0.04); border:1px solid rgba(232,70,70,0.15); border-radius:14px; padding:1.25rem; margin-bottom:1.5rem; text-align:left; }
+  .instructions h3 { color:var(--danger); font-size:0.88rem; margin-bottom:0.75rem; }
+  .instructions p { color:var(--text2); font-size:0.88rem; line-height:2; }
+
+  .sos-actions { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.5rem; }
+  .action-btn { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1rem; color:var(--text); font-family:'DM Sans',sans-serif; font-size:0.88rem; font-weight:500; cursor:pointer; transition:all 0.2s; text-decoration:none; display:block; }
+  .action-btn:hover { border-color:var(--border2); background:var(--surface); }
+  .action-btn.danger { border-color:rgba(232,70,70,0.3); color:var(--danger); }
+  .action-btn.danger:hover { background:rgba(232,70,70,0.06); }
+
+  .btn-safe { width:100%; background:var(--success); color:white; border:none; font-family:'DM Sans',sans-serif; font-weight:700; font-size:1rem; padding:14px; border-radius:30px; cursor:pointer; transition:all 0.2s; display:none; margin-bottom:1rem; }
+  .btn-safe.show { display:block; }
+  .btn-safe:hover { opacity:0.9; transform:translateY(-2px); }
+
+  .alert { padding:10px 14px; border-radius:8px; font-size:0.85rem; margin-bottom:1rem; display:none; }
+  .alert-success { background:rgba(58,170,116,0.12); border:1px solid rgba(58,170,116,0.25); color:var(--success); }
+  .alert-error { background:rgba(232,70,70,0.10); border:1px solid rgba(232,70,70,0.25); color:var(--danger); }
+
+  footer { background:var(--text); border-top:1px solid var(--border); padding:4rem 2rem 2rem; margin-top:0; }
+  .footer-hero-strip { height:180px; overflow:hidden; position:relative; border-radius:16px; max-width:1100px; margin:0 auto 3rem; }
+  .footer-hero-strip img { width:100%; height:100%; object-fit:cover; filter:brightness(0.5); }
+  .footer-hero-strip-overlay { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:1rem; }
+  .footer-hero-strip-overlay h3 { font-family:'Playfair Display',serif; font-size:1.6rem; color:white; margin-bottom:0.5rem; }
+  .footer-hero-strip-overlay p { color:rgba(255,255,255,0.7); font-size:0.9rem; }
+  .footer-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:2.5rem; max-width:1100px; margin:0 auto 3rem; }
+  .footer-brand-name { font-family:'Playfair Display',serif; font-size:1.4rem; color:#fff; margin-bottom:0.75rem; display:flex; align-items:center; gap:8px; }
+  .footer-logo { width:28px; height:28px; object-fit:contain; border-radius:4px; }
+  .footer-brand p { color:rgba(255,255,255,0.55); font-size:0.9rem; line-height:1.7; }
+  .footer-badges { margin-top:1rem; display:flex; gap:0.75rem; flex-wrap:wrap; }
+  .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.75rem; font-weight:600; }
+  .badge-gold { background:rgba(168,85,247,0.15); color:#c084fc; }
+  .badge-teal { background:rgba(58,170,116,0.15); color:var(--success2); }
+  .footer-col h4 { font-size:0.8rem; text-transform:uppercase; letter-spacing:0.1em; color:#fff; margin-bottom:1rem; }
+  .footer-col a { display:block; color:rgba(255,255,255,0.50); font-size:0.9rem; text-decoration:none; margin-bottom:0.5rem; cursor:pointer; transition:color 0.2s; }
+  .footer-col a:hover { color:var(--pink2); }
+  .footer-emergency { background:rgba(232,70,70,0.06); border:1px solid rgba(232,70,70,0.2); border-radius:12px; padding:1rem 1.25rem; }
+  .footer-emergency h4 { color:var(--danger); font-size:0.8rem; margin-bottom:0.5rem; letter-spacing:0.05em; }
+  .footer-emergency .num { font-family:'Playfair Display',serif; font-size:1.5rem; color:var(--danger); font-weight:700; }
+  .footer-emergency p { color:rgba(255,255,255,0.45); font-size:0.8rem; margin-top:4px; }
+  .footer-bottom { border-top:1px solid rgba(255,255,255,0.10); padding-top:1.5rem; max-width:1100px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+  .footer-logo { width:80px; height:80px; object-fit:contain; border-radius:6px; mix-blend-mode:normal; }
+  .footer-bottom p { color:rgba(255,255,255,0.40); font-size:0.85rem; }
+  .footer-bottom .heart { color:var(--danger); }
+  .footer-badge { background:rgba(168,85,247,0.10); border:1px solid rgba(168,85,247,0.20); border-radius:20px; padding:4px 14px; font-size:0.78rem; color:#c084fc; }
+</style>
+</head>
+<body>
+<nav>
+	<a class="nav-brand" href="index.html">
+	   <img class="nav-logo" src="/images/HerGuardian_logo_transparent.png" alt="HerGuardian Logo">
+	 </a>
+  <div class="nav-links">
+    <a href="nearby.html">Nearby Help</a>
+    <a href="sos.html" class="nav-sos active">🚨 SOS</a>
+    <span class="nav-logged-out">
+      <a href="about.html">About</a>
+      <a href="login.html" class="nav-login">Login</a>
+      <a href="register.html" class="nav-register">Register</a>
+    </span>
+    <span class="nav-logged-in">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="start-walk.html">Start Walk</a>
+      <a href="profile.html" class="nav-avatar" title="Profile">👤</a>
+      <a href="#" class="nav-login" id="nav-logout-btn">Logout</a>
+    </span>
+  </div>
+</nav>
+
+<main>
+  <div class="page-wrapper">
+
+    <div class="sos-banner">
+      <span>🚨</span>
+      <span>Tap the SOS button to alert your emergency contacts instantly</span>
+    </div>
+
+    <div class="sos-header">
+      <h1>🚨 Emergency SOS</h1>
+      <p id="sos-subtitle">Press the button below to send an emergency alert</p>
+    </div>
+
+    <div class="alert alert-success" id="success-msg"></div>
+    <div class="alert alert-error" id="error-msg"></div>
+
+    <div class="sos-btn-wrap">
+      <div class="sos-big" id="sos-btn" onclick="triggerSOS()">
+        <div class="sos-text">SOS</div>
+        <div class="sos-sub" id="sos-sub-text">TAP TO ALERT</div>
+      </div>
+    </div>
+
+    <div class="location-status">
+      <div class="status-live"><span class="blink">●</span> Live Location Status</div>
+      <div class="location-text" id="location-text">Getting your location...</div>
+    </div>
+
+    <div class="contacts-notified" id="contacts-notified" style="display:none;">
+      <h3>📨 Alerts Sent To</h3>
+      <div id="notified-list">
+        <div class="notified-item"><span>Emergency Contacts</span><span class="badge-alerting">Alerting...</span></div>
+        <div class="notified-item"><span>Police (112)</span><span class="badge-alerting">Alerting...</span></div>
+      </div>
+    </div>
+
+    <button class="btn-safe" id="btn-safe" onclick="markSafe()">✅ I am Safe Now</button>
+
+    <div class="instructions">
+      <h3>📋 Emergency Instructions</h3>
+      <p>
+        1. Move to a well-lit, crowded area immediately<br>
+        2. Call Police: <strong style="color:var(--danger)">112</strong><br>
+        3. Women Helpline: <strong style="color:var(--danger)">1091</strong><br>
+        4. Stay on the line with emergency services<br>
+        5. Your contacts have your live location
+      </p>
+    </div>
+
+    <div class="sos-actions">
+      <a class="action-btn danger" href="tel:112">📞 Call Police 112</a>
+      <a class="action-btn danger" href="tel:1091">📞 Women Helpline 1091</a>
+      <a class="action-btn" href="tel:108">🚑 Ambulance 108</a>
+      <a class="action-btn" href="nearby.html">🏥 Nearest Police Station</a>
+    </div>
+
+  </div>
+</main>
+<footer>
+  <div class="footer-hero-strip">
+    <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1400&q=80" alt="Women safety community">
+    <div class="footer-hero-strip-overlay">
+      <h3>Walk Safe. Walk Fearless.</h3>
+      <p>Emergency: <strong style="color:var(--gold)">112</strong> &nbsp;·&nbsp; Women Helpline: <strong style="color:var(--gold)">1091</strong></p>
+    </div>
+  </div>
+
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-brand-name">
+        <img class="footer-logo" src="/images/HerGuardian_logo_final.png" alt="Her Guardian Logo">
+      </div>
+      <p>Your digital safety companion for every night & day walk. Real-time tracking, smart check-ins, and instant emergency response — because every woman deserves to walk fearlessly.</p>
+      <div class="footer-badges">
+        <span class="badge badge-gold">🔐 Encrypted</span>
+        <span class="badge badge-teal">📡 Real-time GPS</span>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Safety Features</h4>
+      <a href="start-walk.html">🚶‍♀️ Start Safe Walk</a>
+      <a href="tracking.html">📍 Live Tracking</a>
+      <a href="sos.html">🚨 Emergency SOS</a>
+      <a href="nearby.html">🏥 Nearby Help</a>
+	  <a href="about.html">ℹ️ About</a>
+    </div>
+
+    <div class="footer-col">
+      <h4>My Account</h4>
+      <a href="dashboard.html">📊 Dashboard</a>
+      <a href="contacts.html">👥 My Contacts</a>
+      <a href="walk-history.html">📄 Walk History</a>
+      <a href="Complaint.html">📝 File Report</a>
+      <a href="profile.html">👤 My Profile</a>
+    </div>
+
+    <div class="footer-col">
+      <h4>Emergency</h4>
+      <div class="footer-emergency">
+        <h4>🚨 WOMEN HELPLINE</h4>
+        <div class="num">1091</div>
+        <p>24/7 · Free · Confidential</p>
+      </div>
+      <div class="footer-emergency" style="margin-top:0.75rem;">
+        <h4>🚔 EMERGENCY</h4>
+        <div class="num">112</div>
+        <p>Police · Ambulance · Fire</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>© 2026 HerGuardian · Built with <span class="heart">♥</span> for women's safety ·</p>
+    <div class="footer-badge"><img src="/images/HerGuardian_logo_final.png" alt="logo" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:4px;"> Trusted Safety Platform</div>
+  </div>
+</footer>
+
+<script>
+ 
+  const userId = sessionStorage.getItem('userId');
+
+  let currentSosId = null;
+  let sosTriggered = false;
+
+  function getLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          window._lat = pos.coords.latitude;
+          window._lng = pos.coords.longitude;
+          document.getElementById('location-text').textContent =
+            `📍 ${window._lat.toFixed(4)}° N, ${window._lng.toFixed(4)}° E — Location acquired`;
+        },
+        () => {
+          document.getElementById('location-text').textContent =
+            '📍 Location not available — Please enable GPS';
+        }
+      );
+    } else {
+      document.getElementById('location-text').textContent =
+        '📍 GPS not supported on this device';
+    }
+  }
+
+  function showAlert(type, msg) {
+    const el = document.getElementById(type === 'success' ? 'success-msg' : 'error-msg');
+    el.textContent = msg;
+    el.style.display = 'block';
+    setTimeout(() => el.style.display = 'none', 5000);
+  }
+
+  function triggerSOS() {
+    if (sosTriggered) return;
+
+    if (!userId) {
+      showAlert('error', 'Please login first to use SOS!');
+      setTimeout(() => window.location.href = 'login.html', 2000);
+      return;
+    }
+
+    // Button animation
+    const btn = document.getElementById('sos-btn');
+    btn.classList.add('triggered');
+    document.getElementById('sos-sub-text').textContent = 'SENDING...';
+    document.getElementById('sos-subtitle').textContent =
+      'Your location is being shared. Help is on the way!';
+
+    // Backend API call — userId body madhye pathva
+    fetch('/api/sos/trigger', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId:    userId,
+        latitude:  window._lat  || null,
+        longitude: window._lng || null
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      sosTriggered  = true;
+      currentSosId  = data.sosId;
+
+      document.getElementById('sos-sub-text').textContent = 'ALERT SENT!';
+      document.getElementById('contacts-notified').style.display = 'block';
+      document.getElementById('btn-safe').classList.add('show');
+
+      if (data.smsSent) {
+        showAlert('success', '🚨 SOS Alert sent! Your contacts have been notified via SMS!');
+      } else {
+        showAlert('error', '⚠️ SOS saved but SMS could not be sent. Please call 112 immediately!');
+      }
+
+      setTimeout(() => {
+        document.getElementById('notified-list').innerHTML = `
+          <div class="notified-item">
+            <span>Emergency Contacts</span>
+            <span class="${data.smsSent ? 'badge-notified' : 'badge-alerting'}">
+              ${data.smsSent ? '✓ Notified' : '⚠ SMS Failed'}
+            </span>
+          </div>`;
+      }, 3000);
+    })
+    .catch(() => {
+      sosTriggered = true;
+      document.getElementById('sos-sub-text').textContent = 'ALERT SENT!';
+      document.getElementById('contacts-notified').style.display = 'block';
+      document.getElementById('btn-safe').classList.add('show');
+      showAlert('error', '⚠️ Server error! Please call 112 immediately!');
+    });
+  }
+
+  function markSafe() {
+    if (currentSosId) {
+      fetch(`/api/sos/resolve/${currentSosId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: userId })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          showAlert('success', 'Glad you are safe! Your contacts have been notified. ✅');
+          setTimeout(() => window.location.href = userId ? 'dashboard.html' : 'index.html', 2000);
+        }
+      })
+      .catch(() => {
+        window.location.href = userId ? 'dashboard.html' : 'index.html';
+      });
+    } else {
+      window.location.href = userId ? 'dashboard.html' : 'index.html';
+    }
+  }
+  // Page load veli location fetch karo
+  getLocation();
+</script>
+
+<script src="nav.js"></script>
+</body>
+</html>

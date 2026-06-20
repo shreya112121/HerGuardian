@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HerGuardian – Women Safety Companion</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+	@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@400;500;700&display=swap');
+
+	:root {
+	  --bg:            #ffffff;
+	  --bg2:           #faf7ff;
+	  --bg3:           #f3eeff;
+	  --surface:       #f8f4ff;
+	  --card:          #ffffff;
+	  --purple:        #6B21A8;
+	  --purple2:       #7C3AED;
+	  --purple3:       #A855F7;
+	  --purple-light:  #f3eeff;
+
+	  --pink:          #EC4899;
+	  --pink2:         #db2777;
+	  --pink-light:    #fdf2f8;
+	  
+	  --text:          #1a0a2e;
+	  --text2:         #4a3860;
+	  --text3:         #7c6a92;
+
+	  --accent:        #6B21A8;
+	  --accent2:       #7C3AED;
+	  --accent3:       #A855F7;
+
+	 
+	  --border:        rgba(107,33,168,0.10);
+	  --border2:       rgba(107,33,168,0.22);
+	  --border3:       rgba(236,72,153,0.20);
+
+	 
+	  --nav-bg:        rgba(255,255,255,0.92);
+
+	
+	  --danger:        #e84646;
+	  --danger2:       #ff6b6b;
+	  --success:       #3aaa74;
+	  --success2:      #5ec48e;
+	  --warning:       #f5a623;
+	  --sos:           #e84646;
+	  --sos-hover:     #cc3333;
+
+	  --gold:          #6B21A8;
+	  --gold2:         #7C3AED;
+	  --gold3:         #A855F7;
+	  --navy:          #1a0a2e;
+	  --navy2:         #faf7ff;
+	  --navy3:         #f3eeff;
+	  --navy4:         #f8f4ff;
+	  --teal:          #3aaa74;
+	  --rose:          #e84646;
+	}
+
+	
+	* { margin: 0; padding: 0; box-sizing: border-box; }
+
+	body {
+	  background: var(--bg);
+	  color: var(--text);
+	  font-family: 'DM Sans', sans-serif;
+	  min-height: 100vh;
+	}
+
+	nav {
+	  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+	  background: rgba(0,0,0,0.3);
+	  backdrop-filter: blur(12px);
+	  -webkit-backdrop-filter: blur(12px);
+	  border-bottom: 1px solid var(--border);
+	  padding: 0 2rem; height: 64px;
+	  display: flex; align-items: center; justify-content: space-between;
+	  transition: background 0.3s, box-shadow 0.3s;
+	}
+	nav.scrolled {
+	  background: rgba(255,255,255,0.98);
+	  box-shadow: 0 2px 20px rgba(107,33,168,0.08);
+	}
+	.nav-brand {
+	  display: flex; align-items: center; gap: 10px;
+	  font-family: 'Playfair Display', serif; font-size: 1.2rem;
+	  color: var(--text); text-decoration: none;
+	}
+	.nav-logo {
+	  width: 300px; height: 300px;
+	  object-fit: contain;
+	}
+	.nav-links { display: flex; align-items: center; gap: 4px; }
+	.nav-links a {
+	  color: black; font-size: 0.82rem;
+	  padding: 6px 13px; border-radius: 6px;
+	  text-decoration: none; transition: all 0.2s;
+	}
+	.nav-links a:hover { color: var(--purple); background: var(--purple-light); }
+	.nav-login {
+	  color: #2E003E !important;
+	  border: 1px solid #2E003E !important;
+	  border-radius: 20px !important; padding: 5px 16px !important;
+	}
+	.nav-login:hover { background: var(--purple-light) !important; }
+	.nav-register {
+	  background: linear-gradient(135deg, var(--purple) 0%, var(--pink) 100%) !important;
+	  color: #fff !important; font-weight: 600 !important;
+	  border-radius: 20px !important; padding: 5px 16px !important;
+	  border: none !important; transition: opacity 0.2s, transform 0.2s !important;
+	}
+	.nav-register:hover { opacity: 0.88; transform: translateY(-1px); }
+	.nav-avatar {
+	  width: 34px; height: 34px; border-radius: 50%;
+	  background: var(--purple-light); border: 1.5px solid var(--border2);
+	  display: flex; align-items: center; justify-content: center;
+	  color: var(--purple); font-size: 1rem; text-decoration: none;
+	  margin: 0 2px; transition: all 0.2s;
+	}
+	.nav-avatar:hover { background: var(--bg3); }
+	.nav-sos {
+	  background: var(--sos); color: #fff !important;
+	  font-weight: 700 !important; font-size: 0.8rem !important;
+	  padding: 7px 16px !important; border-radius: 20px !important;
+	  margin-left: 4px; animation: pulse-sos 2s infinite;
+	  border: none !important;
+	}
+	@keyframes pulse-sos {
+	  0%,100% { box-shadow: 0 0 0 0 rgba(232,70,70,0.5); }
+	  50%      { box-shadow: 0 0 0 8px rgba(232,70,70,0); }
+	}
+	.nav-logged-in  { display: none; }
+	.nav-logged-out { display: contents; }
+
+	.hero {
+	  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+	  flex-direction: column; text-align: center; padding: 6rem 2rem 4rem;
+	  background: url('/images/bg5.jpeg') center/cover no-repeat;
+	  position: relative; overflow: hidden;
+	}
+	.hero::before {
+	  content: ''; position: absolute; inset: 0;
+	  background: linear-gradient(
+	    160deg,
+	    rgba(255,255,255,0.45) 0%,
+	    rgba(243,238,255,0.35) 50%,
+	    rgba(253,242,248,0.40) 100%
+	  );
+	}
+	.hero-content { position: relative; z-index: 1; max-width: 700px; }
+	.hero-badge {
+	  display: inline-flex; align-items: center; gap: 8px;
+	  background: rgba(107,33,168,0.07); border: 1px solid #2E003E;
+	  border-radius: 20px; padding: 6px 16px; font-size: 0.8rem; color: #2E003E;
+	  margin-bottom: 2rem; letter-spacing: 0.05em; animation: fadeUp 0.6s ease;
+	}
+	.hero h1 {
+	  font-family: 'Playfair Display', serif;
+	  font-size: clamp(2.5rem, 6vw, 5rem);
+	  font-weight: 900; line-height: 1.1; margin-bottom: 1.5rem;
+	  color: var(--text); animation: fadeUp 0.7s ease;
+	}
+	.hero h1 span { color: var(--pink2); }
+	.hero p {
+	  font-size: 1.1rem; color: #2E003E;
+	  max-width: 560px; line-height: 1.7;
+	  margin: 0 auto 3rem; animation: fadeUp 0.8s ease;
+	}
+	.hero-buttons {
+	  display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+	  animation: fadeUp 0.9s ease;
+	}
+	@keyframes fadeUp {
+	  from { opacity: 0; transform: translateY(20px); }
+	  to   { opacity: 1; transform: none; }
+	}
+
+	.btn-primary {
+	  background: linear-gradient(135deg, var(--purple) 0%, var(--pink) 100%);
+	  color: #fff; border: none;
+	  font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 1rem;
+	  padding: 14px 32px; border-radius: 30px; cursor: pointer;
+	  transition: all 0.2s; text-decoration: none; display: inline-block;
+	}
+	.btn-primary:hover {
+	  opacity: 0.88; transform: translateY(-2px);
+	  box-shadow: 0 8px 24px rgba(107,33,168,0.25);
+	}
+	.btn-outline {
+	  background: transparent; color: #2E003E;
+	  border: 1.5px solid #2E003E;
+	  font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 1rem;
+	  padding: 14px 32px; border-radius: 30px; cursor: pointer; transition: all 0.2s;
+	  text-decoration: none; display: inline-block;
+	}
+	.btn-outline:hover {
+	  background: var(--purple-light); transform: translateY(-2px);
+	}
+	.trust-strip {
+	  background: var(--bg2);
+	  border-top: 1px solid var(--border);
+	  border-bottom: 1px solid var(--border);
+	  padding: 1.5rem 2rem;
+	  display: flex; gap: 2.5rem; justify-content: center; align-items: center; flex-wrap: wrap;
+	}
+	.trust-item { display: flex; align-items: center; gap: 0.6rem; color: var(--text2); font-size: 0.88rem; }
+	.trust-item span { color: var(--pink); font-size: 1.2rem; }
+
+
+	.features-section { padding: 5rem 2rem; max-width: 1200px; margin: 0 auto; }
+	.section-header { text-align: center; margin-bottom: 3rem; }
+	.section-header h2 {
+	  font-family: 'Playfair Display', serif; font-size: 2.5rem;
+	  color: var(--text); margin-bottom: 0.75rem;
+	}
+	.section-header p { color: var(--text2); font-size: 1rem; }
+	.section-tag {
+	  display: inline-block;
+	  background: var(--pink-light); border: 1px solid var(--border3);
+	  color: var(--pink2); font-size: 0.75rem; letter-spacing: 0.08em;
+	  padding: 4px 14px; border-radius: 20px; margin-bottom: 1rem; text-transform: uppercase;
+	}
+	.features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 1.5rem; }
+	.feature-card {
+	  background: var(--card); border: 1px solid var(--border);
+	  border-radius: 16px; overflow: hidden; transition: all 0.3s;
+	  cursor: pointer; text-decoration: none; display: block;
+	}
+	.feature-card:hover {
+	  border-color: var(--border2); transform: translateY(-4px);
+	  box-shadow: 0 8px 32px rgba(107,33,168,0.10);
+	}
+	.feature-card-img {
+	  width: 100%; height: 160px; object-fit: cover; display: block;
+	  filter: brightness(0.85); transition: filter 0.3s;
+	}
+	.feature-card:hover .feature-card-img { filter: brightness(1); }
+	.feature-card-body { padding: 1.5rem; }
+	.feature-icon { font-size: 1.6rem; margin-bottom: 0.75rem; }
+	.feature-card h3 {
+	  font-family: 'Playfair Display', serif; font-size: 1.15rem;
+	  color: var(--purple); margin-bottom: 0.6rem;
+	}
+	.feature-card p { color: var(--text2); font-size: 0.88rem; line-height: 1.6; }
+
+
+	.how-section { padding: 5rem 2rem; background: var(--bg2); }
+	.how-inner { max-width: 900px; margin: 0 auto; }
+	.steps-grid {
+	  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+	  gap: 2rem; margin-top: 3rem;
+	}
+	.step-card { text-align: center; }
+	.step-num {
+	  width: 52px; height: 52px; border-radius: 50%;
+	  background: linear-gradient(135deg, var(--purple), var(--pink));
+	  display: flex; align-items: center; justify-content: center;
+	  font-family: 'Playfair Display', serif; font-size: 1.4rem; color: #fff;
+	  margin: 0 auto 1rem;
+	  box-shadow: 0 4px 16px rgba(107,33,168,0.20);
+	}
+	.step-card h3 { color: var(--text); font-size: 1rem; margin-bottom: 0.5rem; }
+	.step-card p { color: var(--text2); font-size: 0.85rem; line-height: 1.6; }
+
+	
+	.stats-section { padding: 4rem 2rem; max-width: 900px; margin: 0 auto; }
+	.stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1.5rem; }
+	@media(max-width:600px) { .stats-grid { grid-template-columns: repeat(2,1fr); } }
+	.stat-box {
+	  text-align: center; background: var(--card);
+	  border: 1px solid var(--border); border-radius: 16px; padding: 2rem 1rem;
+	  transition: all 0.2s;
+	}
+	.stat-box:hover {
+	  border-color: var(--border2);
+	  box-shadow: 0 4px 16px rgba(107,33,168,0.08);
+	}
+	.stat-num {
+	  font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 900;
+	  background: linear-gradient(135deg, var(--purple), var(--pink));
+	  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+	}
+	.stat-label { color: var(--text2); font-size: 0.82rem; margin-top: 6px; }
+
+
+	.emergency-section {
+	  background: #fff5f5;
+	  border-top: 1px solid rgba(232,70,70,0.15);
+	  border-bottom: 1px solid rgba(232,70,70,0.15);
+	  padding: 2rem; display: flex; align-items: center;
+	  justify-content: center; gap: 3rem; flex-wrap: wrap;
+	}
+	.emergency-section p { color: var(--text2); font-size: 0.9rem; }
+	.emergency-nums { display: flex; gap: 2rem; flex-wrap: wrap; }
+	.emergency-num { text-align: center; }
+	.emergency-num .num {
+	  font-family: 'Playfair Display', serif; font-size: 1.8rem;
+	  color: var(--danger); font-weight: 700;
+	}
+	.emergency-num .lbl { font-size: 0.72rem; color: var(--text3); }
+
+	footer {
+	  background: var(--text);
+	  border-top: 1px solid var(--border);
+	  padding: 4rem 2rem 2rem;
+	}
+	.footer-hero-strip {
+	  height: 180px; overflow: hidden; position: relative;
+	  border-radius: 16px; max-width: 1100px; margin: 0 auto 3rem;
+	}
+	.footer-hero-strip img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.4); }
+	.footer-hero-strip-overlay {
+	  position: absolute; inset: 0;
+	  display: flex; flex-direction: column; align-items: center; justify-content: center;
+	  text-align: center; padding: 1rem;
+	}
+	.footer-hero-strip-overlay h3 {
+	  font-family: 'Playfair Display', serif; font-size: 1.6rem;
+	  color: white; margin-bottom: 0.5rem;
+	}
+	.footer-hero-strip-overlay p { color: rgba(255,255,255,0.7); font-size: 0.9rem; }
+	.footer-grid {
+	  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+	  gap: 2.5rem; max-width: 1100px; margin: 0 auto 3rem;
+	}
+	.footer-brand-name {
+	  font-family: 'Playfair Display', serif; font-size: 1.4rem;
+	  color: #fff; margin-bottom: 0.75rem;
+	  display: flex; align-items: center; gap: 8px;
+	}
+	.footer-logo { width: 28px; height: 28px; object-fit: contain; border-radius: 4px; }
+	.footer-brand p { color: rgba(255,255,255,0.55); font-size: 0.9rem; line-height: 1.7; }
+	.footer-badges { margin-top: 1rem; display: flex; gap: 0.75rem; flex-wrap: wrap; }
+	.badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+	.badge-gold { background: rgba(168,85,247,0.15); color: #c084fc; }
+	.badge-teal { background: rgba(58,170,116,0.15); color: var(--success2); }
+	.footer-col h4 {
+	  font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em;
+	  color: #fff; margin-bottom: 1rem;
+	}
+	.footer-col a {
+	  display: block; color: rgba(255,255,255,0.50); font-size: 0.9rem;
+	  text-decoration: none; margin-bottom: 0.5rem; transition: color 0.2s;
+	}
+	.footer-col a:hover { color: var(--pink2); }
+	.footer-emergency {
+	  background: rgba(232,70,70,0.08); border: 1px solid rgba(232,70,70,0.25);
+	  border-radius: 12px; padding: 1rem 1.25rem;
+	}
+	.footer-emergency h4 { color: var(--danger); font-size: 0.8rem; margin-bottom: 0.5rem; letter-spacing: 0.05em; }
+	.footer-emergency .num {
+	  font-family: 'Playfair Display', serif; font-size: 1.5rem;
+	  color: var(--danger); font-weight: 700;
+	}
+	.footer-emergency p { color: rgba(255,255,255,0.45); font-size: 0.8rem; margin-top: 4px; }
+	.footer-bottom {
+	  border-top: 1px solid rgba(255,255,255,0.10); padding-top: 1.5rem;
+	  max-width: 1100px; margin: 0 auto;
+	  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+	}
+	.footer-bottom p { color: rgba(255,255,255,0.40); font-size: 0.85rem; }
+	.footer-bottom .heart { color: var(--danger); }
+	.footer-badge {
+	  background: rgba(168,85,247,0.10); border: 1px solid rgba(168,85,247,0.20);
+	  border-radius: 20px; padding: 4px 14px; font-size: 0.78rem; color: #c084fc;
+	}
+	.footer-logo { width:80px; height:80px; object-fit:contain; border-radius:6px; mix-blend-mode:normal; }
+
+
+	@media (max-width: 768px) {
+	  .nav-links { gap: 2px; }
+	  .nav-links a { padding: 5px 8px; font-size: 0.78rem; }
+	  .hero h1 { font-size: 2.2rem; }
+	  .stats-grid { grid-template-columns: repeat(2,1fr); }
+	}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html">
+    <img class="nav-logo" src="/images/HerGuardian_logo_transparent.png" alt="HerGuardian Logo">
+  </a>
+  <div class="nav-links">
+    <a href="nearby.html">Nearby Help</a>
+    <a href="sos.html" class="nav-sos">🚨 SOS</a>
+    <span class="nav-logged-out">
+      <a href="about.html">About</a>
+      <a href="login.html" class="nav-login">Login</a>
+      <a href="register.html" class="nav-register">Register</a>
+    </span>
+    <span class="nav-logged-in">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="start-walk.html">Start Walk</a>
+      <a href="profile.html" class="nav-avatar" title="Profile">👤</a>
+      <a href="#" class="nav-login" id="nav-logout-btn">Logout</a>
+    </span>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge"><img src="/images/HerGuardian_logo_final.png" alt="logo" style="width:40px;height:40px;object-fit:contain;vertical-align:middle;"> Women Safety Companion</div>
+    <h1>Feel safe<br>Stay Confident<br><span>Anytime,Anywhere</span></h1>
+    <p>HerGuardian keeps you safe during your late-night walks with real-time tracking, instant SOS alerts, and emergency contact notifications.</p>
+    <div class="hero-buttons">
+      <a class="btn-primary" href="register.html">🚀 Start Your Safety Journey</a>
+      <a class="btn-outline" href="login.html">🔐 Sign In</a>
+    </div>
+  </div>
+</section>
+
+<div class="trust-strip">
+  <div class="trust-item"><span><img src="/images/HerGuardian_logo_final.png" alt="logo" style="width:60px;height:60px;object-fit:contain;vertical-align:middle;"></span> 100% Secure & Private</div>
+  <div class="trust-item"><span>📍</span> Real-Time GPS Tracking</div>
+  <div class="trust-item"><span>🚨</span> Instant SOS Alerts</div>
+  <div class="trust-item"><span>👥</span> Emergency Contacts</div>
+  <div class="trust-item"><span>🌙</span> 24/7 Available</div>
+</div>
+
+<section class="features-section">
+  <div class="section-header">
+    <div class="section-tag">Features</div>
+    <h2>Everything You Need to Stay Safe</h2>
+    <p>Comprehensive safety tools designed for women walking alone anyutime</p>
+  </div>
+  <div class="features-grid">
+    <a class="feature-card" href="start-walk.html">
+      <img class="feature-card-img" src="/images/safewalk.jpg.jpeg" alt="Walk Tracking">
+      <div class="feature-card-body">
+        <div class="feature-icon">🚶‍♀️</div>
+        <h3>Safe Walk Tracking</h3>
+        <p>Start a walk session with your route details. Get timed check-ins and automatic alerts if you don't reach safely.</p>
+      </div>
+    </a>
+    <a class="feature-card" href="sos.html">
+      <img class="feature-card-img" src="/images/sos.jpg.jpeg" alt="SOS Alert">
+      <div class="feature-card-body">
+        <div class="feature-icon">🚨</div>
+        <h3>Instant SOS Alert</h3>
+        <p>One tap emergency button sends your live location to all emergency contacts and alerts nearby authorities.</p>
+      </div>
+    </a>
+    <a class="feature-card" href="contacts.html">
+      <img class="feature-card-img" src="/images/emergency.jpg.jpeg" alt="Contacts">
+      <div class="feature-card-body">
+        <div class="feature-icon">👥</div>
+        <h3>Emergency Contacts</h3>
+        <p>Add trusted contacts — family, friends — who will be instantly notified with your location during an emergency.</p>
+      </div>
+    </a>
+    <a class="feature-card" href="nearby.html">
+      <img class="feature-card-img" src="/images/nearby.jpg.jpeg" alt="Nearby Help">
+      <div class="feature-card-body">
+        <div class="feature-icon">🏥</div>
+        <h3>Nearby Help</h3>
+        <p>Find nearest police stations, hospitals, and safe zones instantly. Never be alone in an emergency.</p>
+      </div>
+    </a>
+    <a class="feature-card" href="Complaint.html">
+      <img class="feature-card-img" src="/images/report.jpg.jpeg" alt="Complaint">
+      <div class="feature-card-body">
+        <div class="feature-icon">📝</div>
+        <h3>File Complaint</h3>
+        <p>Report incidents easily with location details. Build a safety record and help make your community safer.</p>
+      </div>
+    </a>
+    <a class="feature-card" href="dashboard.html">
+      <img class="feature-card-img" src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80" alt="Dashboard">
+      <div class="feature-card-body">
+        <div class="feature-icon">📊</div>
+        <h3>Safety Dashboard</h3>
+        <p>Track your walk history, SOS alerts, and safety score. Complete overview of your safety activity.</p>
+      </div>
+    </a>
+  </div>
+</section>
+
+<section class="how-section">
+  <div class="how-inner">
+    <div class="section-header">
+      <div class="section-tag">How It Works</div>
+      <h2>Simple. Fast. Safe.</h2>
+      <p>Get started in 3 easy steps</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <h3>Create Account</h3>
+        <p>Register with your email and add your emergency contacts who will be notified in case of danger.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <h3>Start Walk</h3>
+        <p>Before going out, tap "Start Walk" — share your route and expected arrival time.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <h3>Stay Protected</h3>
+        <p>Walk confidently knowing one tap SOS will alert everyone and share your live location instantly.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <h3>Arrive Safely</h3>
+        <p>Mark yourself safe when you arrive. Your contacts get notified and your walk is recorded.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="stats-section">
+  <div class="stats-grid">
+    <div class="stat-box">
+      <div class="stat-num">24/7</div>
+      <div class="stat-label">Always Available</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">1 Tap</div>
+      <div class="stat-label">SOS Alert</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">100%</div>
+      <div class="stat-label">Free to Use</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">🔒</div>
+      <div class="stat-label">Secure & Private</div>
+    </div>
+  </div>
+</section>
+
+<div class="emergency-section">
+  <p>🚨 <strong style="color:var(--danger)">Emergency Numbers</strong> — Always Available</p>
+  <div class="emergency-nums">
+    <div class="emergency-num"><div class="num">112</div><div class="lbl">Emergency</div></div>
+    <div class="emergency-num"><div class="num">1091</div><div class="lbl">Women Helpline</div></div>
+    <div class="emergency-num"><div class="num">100</div><div class="lbl">Police</div></div>
+    <div class="emergency-num"><div class="num">108</div><div class="lbl">Ambulance</div></div>
+  </div>
+</div>
+
+<section style="padding:5rem 2rem; text-align:center; background:var(--navy3); border-top:1px solid var(--border);">
+  <div class="section-tag">Get Started</div>
+  <h2 style="font-family:'Playfair Display',serif; font-size:2.5rem; color:var(--text); margin:1rem 0;">Walk Fearlessly Tonight</h2>
+  <p style="color:var(--text2); font-size:1rem; margin-bottom:2rem;">Join  HerGuardian — your personal safety companion for every night & day walk</p>
+  <a class="btn-primary" href="register.html"><img src="/images/HerGuardian_logo_final.png" alt="logo" style="width:50px;height:50px;object-fit:contain;vertical-align:middle;margin-right:6px;"> Create Account</a>
+</section>
+
+<footer>
+  <div class="footer-hero-strip">
+    <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1400&q=80" alt="Women safety community">
+    <div class="footer-hero-strip-overlay">
+      <h3>Walk Safe. Walk Fearless.</h3>
+      <p>Emergency: <strong style="color:var(--gold)">112</strong> &nbsp;·&nbsp; Women Helpline: <strong style="color:var(--gold)">1091</strong></p>
+    </div>
+  </div>
+
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-brand-name">
+        <img class="footer-logo" src="/images/HerGuardian_logo_final.png" alt="Her Guardian Logo">
+      </div>
+      <p>Your digital safety companion for every night & day walk. Real-time tracking, smart check-ins, and instant emergency response — because every woman deserves to walk fearlessly.</p>
+      <div class="footer-badges">
+        <span class="badge badge-gold">🔐 Encrypted</span>
+        <span class="badge badge-teal">📡 Real-time GPS</span>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Safety Features</h4>
+      <a href="start-walk.html">🚶‍♀️ Start Safe Walk</a>
+      <a href="tracking.html">📍 Live Tracking</a>
+      <a href="sos.html">🚨 Emergency SOS</a>
+      <a href="route.html">🗺️ Safe Routes</a>
+      <a href="nearby.html">🏥 Nearby Help</a>
+	  <a href="about.html">ℹ️ About</a>
+    </div>
+
+    <div class="footer-col">
+      <h4>My Account</h4>
+      <a href="dashboard.html">📊 Dashboard</a>
+      <a href="contacts.html">👥 My Contacts</a>
+      <a href="history.html">📄 Walk History</a>
+      <a href="Complaint.html">📝 File Report</a>
+      <a href="profile.html">👤 My Profile</a>
+    </div>
+
+    <div class="footer-col">
+      <h4>Emergency</h4>
+      <div class="footer-emergency">
+        <h4>🚨 WOMEN HELPLINE</h4>
+        <div class="num">1091</div>
+        <p>24/7 · Free · Confidential</p>
+      </div>
+      <div class="footer-emergency" style="margin-top:0.75rem;">
+        <h4>🚔 EMERGENCY</h4>
+        <div class="num">112</div>
+        <p>Police · Ambulance · Fire</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>© 2026 HerGuardian · Built with <span class="heart">♥</span> for women's safety ·</p>
+    <div class="footer-badge"><img src="/images/HerGuardian_logo_final.png" alt="logo" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:4px;"> Trusted Safety Platform</div>
+  </div>
+</footer>
+
+<script>
+	
+  (function () {
+    const token = localStorage.getItem('token');
+    const loggedIn  = document.querySelectorAll('.nav-logged-in');
+    const loggedOut = document.querySelectorAll('.nav-logged-out');
+    if (token) {
+      loggedIn.forEach(el  => el.style.display = 'contents');
+      loggedOut.forEach(el => el.style.display = 'none');
+    } else {
+      loggedIn.forEach(el  => el.style.display = 'none');
+      loggedOut.forEach(el => el.style.display = 'contents');
+    }
+    const logoutBtn = document.getElementById('nav-logout-btn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = 'index.html';
+      });
+    }
+	
+  })();
+  
+  window.addEventr
+  
+</script>
+
+<script src="nav.js"></script>
+
+</body>
+</html>

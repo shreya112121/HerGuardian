@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile – HerGuardian</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+	@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@400;500;700&display=swap');
+  :root {
+    --bg:            #ffffff;
+    --bg2:           #faf7ff;
+    --bg3:           #f3eeff;
+    --bg4:           #ede8ff;
+    --surface:       #f8f4ff;
+    --card:          #ffffff;
+    --purple:        #6B21A8;
+    --purple2:       #7C3AED;
+    --purple3:       #A855F7;
+    --purple-light:  #f3eeff;
+
+    --pink:          #EC4899;
+    --pink2:         #db2777;
+    --pink-light:    #fdf2f8;
+
+    --text:          #1a0a2e;
+    --text2:         #4a3860;
+    --text3:         #7c6a92;
+
+    --accent:        #6B21A8;
+    --accent2:       #7C3AED;
+    --accent3:       #A855F7;
+
+    --border:        rgba(107,33,168,0.10);
+    --border2:       rgba(107,33,168,0.22);
+    --border3:       rgba(236,72,153,0.20);
+
+    --nav-bg:        rgba(255,255,255,0.92);
+
+    --danger:        #e84646;
+    --danger2:       #ff6b6b;
+    --success:       #3aaa74;
+    --success2:      #5ec48e;
+    --warning:       #f5a623;
+    --sos:           #e84646;
+    --sos-hover:     #cc3333;
+
+    --gold:          #6B21A8;
+    --gold2:         #7C3AED;
+    --gold3:         #A855F7;
+    --navy:          #1a0a2e;
+    --navy2:         #faf7ff;
+    --navy3:         #f3eeff;
+    --navy4:         #f8f4ff;
+    --teal:          #3aaa74;
+    --rose:          #e84646;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: rgba(0,0,0,0.3);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: 0.3s;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    padding: 0 2rem; height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  nav.scrolled {
+    background: rgba(255,255,255,0.98);
+    box-shadow: 0 2px 20px rgba(107,33,168,0.08);
+  }
+  .nav-brand { display:flex; align-items:center; gap:10px; font-family:'Playfair Display',serif; font-size:1.2rem; color:var(--purple); text-decoration:none; }
+  .nav-links { display:flex; align-items:center; gap:4px; }
+  .nav-links a { color:black; font-size:0.82rem; padding:6px 13px; border-radius:6px; text-decoration:none; transition:all 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color:var(--purple); background:var(--purple-light); }
+  .nav-sos {
+    background:#e84646 !important;
+    color:#ffffff !important;
+    font-weight:700 !important;
+    font-size:0.85rem !important;
+    padding:7px 16px !important;
+    border-radius:25px !important;
+    border:none !important;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 8px 20px rgba(232,70,70,.35);
+    animation:pulse-sos 2s infinite;
+    transition:all .3s ease;
+  }
+  .nav-logo { width:300px; height:300px; object-fit:contain; border-radius:6px; mix-blend-mode:normal; }
+  @keyframes pulse-sos { 0%,100%{ box-shadow:0 0 0 0 rgba(232,70,70,0.5); } 50%{ box-shadow:0 0 0 8px rgba(232,70,70,0); } }
+  .logout-btn { background:none; border:1px solid #2E003E; color:#2E003E; font-size:0.8rem; padding:5px 12px; border-radius:8px; cursor:pointer; transition:all 0.2s; }
+  .logout-btn:hover { border-color:var(--danger); color:var(--danger); }
+
+  main { padding-top:64px; min-height:100vh; }
+  .page-wrapper { max-width:700px; margin:0 auto; padding:2.5rem 2rem; }
+
+  .profile-header { background:var(--card); border:1px solid var(--border2); border-radius:20px; padding:2rem; margin-bottom:1.5rem; display:flex; align-items:center; gap:1.5rem; animation:fadeUp 0.5s ease; box-shadow:0 2px 12px rgba(107,33,168,0.07); }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+  .avatar { width:80px; height:80px; border-radius:50%; background:var(--purple-light); border:2px solid var(--purple); display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-size:2rem; color:var(--purple); flex-shrink:0; }
+  .profile-info h2 { font-family:'Playfair Display',serif; font-size:1.5rem; color:var(--text); }
+  .profile-info p { color:var(--text2); font-size:0.88rem; margin-top:4px; }
+  .profile-badge { display:inline-flex; align-items:center; gap:6px; background:rgba(58,170,116,0.10); border:1px solid rgba(58,170,116,0.25); color:var(--success); font-size:0.75rem; padding:3px 10px; border-radius:20px; margin-top:8px; }
+
+  .form-card { background:var(--card); border:1px solid var(--border); border-radius:20px; padding:2rem; margin-bottom:1.5rem; box-shadow:0 1px 6px rgba(107,33,168,0.05); }
+  .form-card h3 { font-size:0.78rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--purple); margin-bottom:1.25rem; display:flex; align-items:center; gap:0.5rem; }
+  .form-card h3::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  @media(max-width:500px) { .form-row { grid-template-columns:1fr; } }
+
+  .form-group { margin-bottom:1.1rem; }
+  .form-group label { display:block; font-size:0.8rem; color:var(--text2); margin-bottom:0.5rem; text-transform:uppercase; letter-spacing:0.04em; }
+  .form-group input { width:100%; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:11px 14px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:0.92rem; outline:none; transition:all 0.2s; }
+  .form-group input:focus { border-color:var(--purple); background:#fff; box-shadow:0 0 0 3px rgba(107,33,168,0.10); }
+  .form-group input::placeholder { color:var(--text3); }
+  .form-group input:disabled { opacity:0.5; cursor:not-allowed; }
+
+  .btn-save { width:100%; background:linear-gradient(135deg, var(--purple) 0%, var(--pink) 100%); color:#fff; border:none; font-family:'DM Sans',sans-serif; font-weight:700; font-size:1rem; padding:13px; border-radius:30px; cursor:pointer; transition:all 0.2s; }
+  .btn-save:hover { opacity:0.88; transform:translateY(-2px); box-shadow:0 8px 24px rgba(107,33,168,0.28); }
+  .btn-save:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+
+  .stats-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:1.5rem; }
+  @media(max-width:500px) { .stats-grid { grid-template-columns:1fr 1fr; } }
+  .stat-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:1.25rem; text-align:center; }
+  .stat-icon { font-size:1.8rem; margin-bottom:0.5rem; }
+  .stat-num { font-family:'Playfair Display',serif; font-size:1.8rem; color:var(--purple); font-weight:700; }
+  .stat-label { font-size:0.72rem; color:var(--text3); text-transform:uppercase; letter-spacing:0.06em; margin-top:4px; }
+
+  .danger-card { background:rgba(232,70,70,0.05); border:1px solid rgba(232,70,70,0.2); border-radius:16px; padding:1.5rem; margin-bottom:1.5rem; }
+  .danger-card h3 { color:var(--danger); font-size:0.88rem; margin-bottom:1rem; }
+  .btn-logout-full { width:100%; background:none; border:1px solid rgba(232,70,70,0.4); color:var(--danger); font-family:'DM Sans',sans-serif; font-weight:600; font-size:0.92rem; padding:11px; border-radius:12px; cursor:pointer; transition:all 0.2s; }
+  .btn-logout-full:hover { background:rgba(232,70,70,0.08); }
+
+  .alert { padding:10px 14px; border-radius:8px; font-size:0.85rem; margin-bottom:1rem; display:none; }
+  .alert-success { background:rgba(58,170,116,0.12); border:1px solid rgba(58,170,116,0.3); color:#1a7a4a; }
+  .alert-error   { background:rgba(232,70,70,0.10); border:1px solid rgba(232,70,70,0.25); color:#c0302e; }
+
+  footer { background:var(--text); border-top:1px solid var(--border); padding:4rem 2rem 2rem; margin-top:0; }
+  .footer-hero-strip { height:180px; overflow:hidden; position:relative; border-radius:16px; max-width:1100px; margin:0 auto 3rem; }
+  .footer-hero-strip img { width:100%; height:100%; object-fit:cover; filter:brightness(0.5); }
+  .footer-hero-strip-overlay { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:1rem; }
+  .footer-hero-strip-overlay h3 { font-family:'Playfair Display',serif; font-size:1.6rem; color:white; margin-bottom:0.5rem; }
+  .footer-hero-strip-overlay p { color:rgba(255,255,255,0.7); font-size:0.9rem; }
+  .footer-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:2.5rem; max-width:1100px; margin:0 auto 3rem; }
+  .footer-brand-name { font-family:'Playfair Display',serif; font-size:1.4rem; color:#fff; margin-bottom:0.75rem; display:flex; align-items:center; gap:8px; }
+  .footer-logo { width:28px; height:28px; object-fit:contain; border-radius:4px; }
+  .footer-brand p { color:rgba(255,255,255,0.55); font-size:0.9rem; line-height:1.7; }
+  .footer-badges { margin-top:1rem; display:flex; gap:0.75rem; flex-wrap:wrap; }
+  .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.75rem; font-weight:600; }
+  .badge-gold { background:rgba(168,85,247,0.15); color:#c084fc; }
+  .badge-teal { background:rgba(58,170,116,0.15); color:var(--success2); }
+  .footer-col h4 { font-size:0.8rem; text-transform:uppercase; letter-spacing:0.1em; color:#fff; margin-bottom:1rem; }
+  .footer-col a { display:block; color:rgba(255,255,255,0.50); font-size:0.9rem; text-decoration:none; margin-bottom:0.5rem; cursor:pointer; transition:color 0.2s; }
+  .footer-col a:hover { color:var(--pink2); }
+  .footer-emergency { background:rgba(232,70,70,0.08); border:1px solid rgba(232,70,70,0.25); border-radius:12px; padding:1rem 1.25rem; }
+  .footer-emergency h4 { color:var(--danger); font-size:0.8rem; margin-bottom:0.5rem; letter-spacing:0.05em; }
+  .footer-emergency .num { font-family:'Playfair Display',serif; font-size:1.5rem; color:var(--danger); font-weight:700; }
+  .footer-emergency p { color:rgba(255,255,255,0.45); font-size:0.8rem; margin-top:4px; }
+  .footer-bottom { border-top:1px solid rgba(255,255,255,0.10); padding-top:1.5rem; max-width:1100px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+  .footer-bottom p { color:rgba(255,255,255,0.40); font-size:0.85rem; }
+  .footer-bottom .heart { color:var(--danger); }
+  .footer-badge { background:rgba(168,85,247,0.10); border:1px solid rgba(168,85,247,0.20); border-radius:20px; padding:4px 14px; font-size:0.78rem; color:#c084fc; }
+  .footer-logo { width:80px; height:80px; object-fit:contain; border-radius:6px; mix-blend-mode:normal; }
+
+</style>
+</head>
+<body>
+
+<nav>
+	<a class="nav-brand" href="index.html">
+	   <img class="nav-logo" src="/images/HerGuardian_logo_transparent.png" alt="HerGuardian Logo">
+	 </a>
+  <div class="nav-links">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="start-walk.html">Start Walk</a>
+	<a href="tracking.html">Tracking</a>
+	<a href="nearby.html">Nearby Help</a>
+    <a href="contacts.html">Contacts</a>
+    <a href="walk-history.html">History</a>
+    <a href="complaint.html">Report</a>
+    <a href="profile.html" class="active">Profile</a>
+    <a href="sos.html" class="nav-sos">🚨 SOS</a>
+  </div>
+  <button class="logout-btn" onclick="doLogout()">Logout</button>
+</nav>
+
+<main>
+  <div class="page-wrapper">
+
+    <div class="alert alert-success" id="success-msg"></div>
+    <div class="alert alert-error"   id="error-msg"></div>
+
+    <div class="profile-header">
+      <div class="avatar" id="avatar">U</div>
+      <div class="profile-info">
+        <h2 id="profile-name">Loading...</h2>
+        <p id="profile-email">—</p>
+        <div class="profile-badge">✅ Verified Account</div>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">🚶‍♀️</div>
+        <div class="stat-num" id="total-walks">0</div>
+        <div class="stat-label">Total Walks</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-num" id="safe-walks">0</div>
+        <div class="stat-label">Safe Trips</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🚨</div>
+        <div class="stat-num" id="sos-count">0</div>
+        <div class="stat-label">SOS Alerts</div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <h3>👤 Personal Information</h3>
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="fullName" placeholder="Your full name" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Email (Cannot Change)</label>
+          <input type="email" id="email" disabled />
+        </div>
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="tel" id="phone" placeholder="Your phone number" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Address</label>
+        <input type="text" id="address" placeholder="Your home address" />
+      </div>
+      <button class="btn-save" id="save-btn" onclick="updateProfile()">💾 Save Changes</button>
+    </div>
+
+    <div class="danger-card">
+      <h3>⚠️ Account Actions</h3>
+      <button class="btn-logout-full" onclick="doLogout()">🚪 Logout from Account</button>
+    </div>
+
+  </div>
+</main>
+<footer>
+  <div class="footer-hero-strip">
+    <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1400&q=80" alt="Women safety community">
+    <div class="footer-hero-strip-overlay">
+      <h3>Walk Safe. Walk Fearless.</h3>
+      <p>Emergency: <strong style="color:var(--gold)">112</strong> &nbsp;·&nbsp; Women Helpline: <strong style="color:var(--gold)">1091</strong></p>
+    </div>
+  </div>
+
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-brand-name">
+        <img class="footer-logo" src="/images/HerGuardian_logo_final.png" alt="Her Guardian Logo">
+      </div>
+      <p>Your digital safety companion for every night & day walk. Real-time tracking, smart check-ins, and instant emergency response — because every woman deserves to walk fearlessly.</p>
+      <div class="footer-badges">
+        <span class="badge badge-gold">🔐 Encrypted</span>
+        <span class="badge badge-teal">📡 Real-time GPS</span>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Safety Features</h4>
+      <a href="start-walk.html">🚶‍♀️ Start Safe Walk</a>
+      <a href="tracking.html">📍 Live Tracking</a>
+      <a href="sos.html">🚨 Emergency SOS</a>
+      <a href="nearby.html">🏥 Nearby Help</a>
+	  <a href="about.html">ℹ️ About</a>
+    </div>
+
+    <div class="footer-col">
+      <h4>My Account</h4>
+      <a href="dashboard.html">📊 Dashboard</a>
+      <a href="contacts.html">👥 My Contacts</a>
+      <a href="walk-history.html">📄 Walk History</a>
+      <a href="Complaint.html">📝 File Report</a>
+      <a href="profile.html">👤 My Profile</a>
+     
+    </div>
+
+    <div class="footer-col">
+      <h4>Emergency</h4>
+      <div class="footer-emergency">
+        <h4>🚨 WOMEN HELPLINE</h4>
+        <div class="num">1091</div>
+        <p>24/7 · Free · Confidential</p>
+      </div>
+      <div class="footer-emergency" style="margin-top:0.75rem;">
+        <h4>🚔 EMERGENCY</h4>
+        <div class="num">112</div>
+        <p>Police · Ambulance · Fire</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>© 2026 HerGuardian · Built with <span class="heart">♥</span> for women's safety ·</p>
+    <div class="footer-badge"><img src="/images/HerGuardian_logo_final.png" alt="logo" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:4px;"> Trusted Safety Platform</div>
+  </div>
+</footer>
+
+<script>
+  const userId   = sessionStorage.getItem('userId');
+  const fullName = sessionStorage.getItem('fullName') || '';
+  const token    = sessionStorage.getItem('token') || '';
+
+  if (!userId) window.location.href = 'login.html';
+
+  function doLogout() {
+    sessionStorage.clear();
+    window.location.href = 'login.html';
+  }
+
+  function authHeaders(json) {
+    const h = {};
+    if (token) h['Authorization'] = 'Bearer ' + token;
+    if (json)  h['Content-Type']  = 'application/json';
+    return h;
+  }
+
+  function showAlert(type, msg) {
+    const el = document.getElementById(type === 'success' ? 'success-msg' : 'error-msg');
+    el.textContent   = msg;
+    el.style.display = 'block';
+    setTimeout(() => el.style.display = 'none', 3000);
+  }
+
+  function loadProfile() {
+    // sessionStorage madhun instant fill
+    if (fullName) {
+      document.getElementById('profile-name').textContent = fullName;
+      document.getElementById('avatar').textContent = fullName.charAt(0).toUpperCase();
+      document.getElementById('fullName').value = fullName;
+    }
+
+    // API madhun fresh data
+    fetch(`/api/auth/profile/${userId}`, { headers: authHeaders() })
+    .then(res => res.json())
+    .then(data => {
+      const name = data.fullName || fullName || 'User';
+      document.getElementById('profile-name').textContent  = name;
+      document.getElementById('profile-email').textContent = data.email || '';
+      document.getElementById('avatar').textContent        = name.charAt(0).toUpperCase();
+      document.getElementById('fullName').value = name;
+      document.getElementById('email').value    = data.email   || '';
+      document.getElementById('phone').value    = data.phone   || '';
+      document.getElementById('address').value  = data.address || '';
+    }).catch(() => {});
+  }
+
+  function loadStats() {
+    fetch(`/api/walk/count/${userId}`, { headers: authHeaders() })
+      .then(r => r.json()).then(d => {
+        document.getElementById('total-walks').textContent = d.total || 0;
+        document.getElementById('safe-walks').textContent  = d.safe  || 0;
+      }).catch(() => {});
+
+    fetch(`/api/sos/count/${userId}`, { headers: authHeaders() })
+      .then(r => r.json()).then(d => {
+        document.getElementById('sos-count').textContent = d.count || 0;
+      }).catch(() => {});
+  }
+
+  function updateProfile() {
+    const name    = document.getElementById('fullName').value.trim();
+    const phone   = document.getElementById('phone').value.trim();
+    const address = document.getElementById('address').value.trim();
+    const btn     = document.getElementById('save-btn');
+
+    if (!name) { showAlert('error', 'Full name required ahe!'); return; }
+
+    btn.disabled    = true;
+    btn.textContent = 'Saving...';
+
+    fetch(`/api/auth/profile/update/${userId}`, {
+      method:  'PUT',
+      headers: authHeaders(true),
+      body:    JSON.stringify({ fullName: name, phone, address })
+    })
+    .then(res => res.json())
+    .then(data => {
+      btn.disabled    = false;
+      btn.textContent = '💾 Save Changes';
+      if (data.success) {
+        // ✅ sessionStorage madhye pn update kara
+        sessionStorage.setItem('fullName', name);
+        document.getElementById('profile-name').textContent = name;
+        document.getElementById('avatar').textContent = name.charAt(0).toUpperCase();
+        showAlert('success', 'Profile updated successfully! ✅');
+      } else {
+        showAlert('error', data.message || 'Update failed!');
+      }
+    })
+    .catch(() => {
+      btn.disabled    = false;
+      btn.textContent = '💾 Save Changes';
+      showAlert('error', 'Server error!');
+    });
+  }
+
+  loadProfile();
+  loadStats();
+</script>
+
+<script src="nav.js"></script>
+</body>
+</html>

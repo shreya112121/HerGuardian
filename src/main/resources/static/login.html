@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login – HerGuardian</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@400;500;700&display=swap');
+
+  :root {
+    --bg:            #ffffff;
+    --bg2:           #faf7ff;
+    --bg3:           #f3eeff;
+    --bg4:           #ede4ff;
+    --card:          #ffffff;
+    --surface:       #f8f4ff;
+    --purple:        #6B21A8;
+    --purple2:       #7C3AED;
+    --purple3:       #A855F7;
+    --purple-light:  #f3eeff;
+    --pink:          #EC4899;
+    --pink2:         #db2777;
+    --pink-light:    #fdf2f8;
+    --text:          #1a0a2e;
+    --text2:         #4a3860;
+    --text3:         #7c6a92;
+    --accent:        #6B21A8;
+    --accent2:       #7C3AED;
+    --accent3:       #A855F7;
+    --border:        rgba(107,33,168,0.10);
+    --border2:       rgba(107,33,168,0.22);
+    --border3:       rgba(236,72,153,0.20);
+    --nav-bg:        rgba(255,255,255,0.92);
+    --danger:        #e84646;
+    --danger2:       #ff6b6b;
+    --success:       #3aaa74;
+    --success2:      #5ec48e;
+    --sos:           #e84646;
+    --sos-hover:     #cc3333;
+    --navy:          #1a0a2e;
+    --gold:          #6B21A8;
+    --gold2:         #7C3AED;
+    --gold3:         #A855F7;
+    --teal:          #3aaa74;
+    --rose:          #e84646;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif;
+    min-height:100vh; display:flex; align-items:flex-start; justify-content:center;
+    padding-top:80px; padding-bottom:2rem; position:relative;
+  }
+
+  .bg-image {
+    position:fixed; inset:0;
+    background:
+      linear-gradient(to bottom,
+        rgba(255,255,255,0.88) 0%,
+        rgba(243,238,255,0.82) 60%,
+        rgba(253,242,248,0.96) 100%),
+      url('https://images.unsplash.com/photo-1508780709619-79562169bc64?w=1600&q=80') center/cover no-repeat;
+    z-index:0;
+  }
+  .bg-image::before {
+    content:''; position:absolute; inset:0;
+    background-image:radial-gradient(circle at 1px 1px, rgba(107,33,168,0.07) 1px, transparent 0);
+    background-size:40px 40px;
+  }
+
+  nav {
+    position:fixed; top:0; left:0; right:0; z-index:1000;
+    background:rgba(0,0,0,0.3); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(10px);
+    transition:0.3s; border-bottom:1px solid rgba(255,255,255,0.2);
+    padding:0 2rem; height:64px; display:flex; align-items:center; justify-content:space-between;
+  }
+  nav.scrolled {
+    background: rgba(255,255,255,0.98);
+    box-shadow: 0 2px 20px rgba(107,33,168,0.08);
+  }
+  .nav-logo { width:300px; height:300px; object-fit:contain; border-radius:6px; mix-blend-mode:normal; }
+  .nav-brand { display:flex; align-items:center; gap:10px; font-family:'Playfair Display',serif; font-size:1.2rem; color:var(--text); text-decoration:none; }
+  .nav-links { display:flex; align-items:center; gap:4px; }
+  .nav-links a { color:black; font-size:0.82rem; padding:6px 13px; border-radius:6px; text-decoration:none; transition:all 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color:var(--purple); background:var(--purple-light); }
+  .nav-sos { background:var(--sos) !important; color:#fff !important; font-weight:700 !important; font-size:0.8rem !important; padding:7px 16px !important; border-radius:20px !important; margin-left:4px; animation:pulse-sos 2s infinite; border:none !important; }
+  @keyframes pulse-sos { 0%,100%{ box-shadow:0 0 0 0 rgba(232,70,70,0.5); } 50%{ box-shadow:0 0 0 8px rgba(232,70,70,0); } }
+
+  .login-card {
+    position:relative; z-index:1;
+    background:rgba(255,255,255,0.92); border:1px solid var(--border2);
+    border-radius:24px; padding:3rem 2.5rem;
+    width:100%; max-width:420px;
+    backdrop-filter:blur(20px);
+    box-shadow:0 32px 64px rgba(107,33,168,0.12);
+    animation:fadeUp 0.6s ease;
+  }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:none} }
+
+  .brand { text-align:center; margin-bottom:2rem; }
+  .brand-icon { font-size:2.5rem; display:block; margin-bottom:0.75rem; animation:pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+  .brand h1 { font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:700; color:var(--purple); margin-bottom:0.3rem; }
+  .brand p { color:var(--text2); font-size:0.85rem; }
+
+  .form-group { margin-bottom:1.25rem; }
+  .form-group label { display:block; font-size:0.82rem; color:var(--text2); margin-bottom:0.5rem; letter-spacing:0.04em; text-transform:uppercase; }
+  .form-group input { width:100%; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 16px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:0.95rem; transition:all 0.2s; outline:none; }
+  .form-group input:focus { border-color:var(--purple); background:#fff; box-shadow:0 0 0 3px rgba(107,33,168,0.10); }
+  .form-group input::placeholder { color:var(--text3); }
+
+  .btn-primary { width:100%; background:linear-gradient(135deg, var(--purple) 0%, var(--pink) 100%); color:#fff; border:none; border-radius:30px; padding:13px; font-family:'DM Sans',sans-serif; font-weight:700; font-size:1rem; cursor:pointer; transition:all 0.2s; letter-spacing:0.03em; margin-top:0.5rem; }
+  .btn-primary:hover { opacity:0.88; transform:translateY(-2px); box-shadow:0 8px 24px rgba(107,33,168,0.28); }
+  .btn-primary:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+
+  .divider { text-align:center; margin:1.5rem 0; position:relative; color:var(--text3); font-size:0.82rem; }
+  .divider::before, .divider::after { content:''; position:absolute; top:50%; width:40%; height:1px; background:var(--border); }
+  .divider::before { left:0; } .divider::after { right:0; }
+
+  .register-link { text-align:center; color:var(--text2); font-size:0.88rem; }
+  .register-link a { color:var(--purple); text-decoration:none; font-weight:600; }
+  .register-link a:hover { color:var(--purple2); }
+
+  .alert { padding:10px 14px; border-radius:8px; font-size:0.85rem; margin-bottom:1rem; display:none; }
+  .alert-error   { background:rgba(232,70,70,0.10); border:1px solid rgba(232,70,70,0.25); color:#c0302e; }
+  .alert-success { background:rgba(58,170,116,0.12); border:1px solid rgba(58,170,116,0.3);  color:#1a7a4a; }
+
+  .emergency-strip { margin-top:2rem; padding:0.75rem 1rem; background:rgba(232,70,70,0.08); border:1px solid rgba(232,70,70,0.2); border-radius:10px; display:flex; align-items:center; justify-content:center; gap:1rem; font-size:0.8rem; color:var(--text2); flex-wrap:wrap; }
+  .emergency-strip strong { color:var(--danger); }
+</style>
+</head>
+<body>
+
+<div class="bg-image"></div>
+
+<nav>
+	<a class="nav-brand" href="index.html">
+	   <img class="nav-logo" src="/images/HerGuardian_logo_transparent.png" alt="HerGuardian Logo">
+	 </a>
+  <div class="nav-links">
+    <a href="about.html">About</a>
+    <a href="nearby.html">Nearby Help</a>
+    <a href="login.html" class="active">Login</a>
+    <a href="register.html">Register</a>
+    <a href="sos.html" class="nav-sos">🚨 SOS</a>
+  </div>
+</nav>
+
+<div class="login-card">
+  <div class="brand">
+    <span class="brand-icon"><img src="/images/HerGuardian_logo_final.png" alt="logo" style="width:70px;height:70px;object-fit:contain;vertical-align:middle;margin-right:4px;"></span>
+    <h1>HerGuardian</h1>
+    <p>Your safety companion for everytime walk</p>
+  </div>
+
+  <div class="alert alert-error"   id="error-msg"></div>
+  <div class="alert alert-success" id="success-msg">✅ Login successful! Redirecting...</div>
+
+  <div class="form-group">
+    <label>Email Address</label>
+    <input type="email" id="email" placeholder="Enter your email" autocomplete="email" />
+  </div>
+  <div class="form-group">
+    <label>Password</label>
+    <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password" />
+  </div>
+
+  <button class="btn-primary" id="login-btn" onclick="handleLogin()">🔐 Sign In Safely</button>
+
+  <div class="divider">or</div>
+  <div class="register-link">
+    New to HerGuardian? <a href="register.html">Create Account</a>
+  </div>
+
+  <div class="emergency-strip">
+    <span>🚨 Emergency: <strong>112</strong></span>
+    <span>👩 Women Helpline: <strong>1091</strong></span>
+  </div>
+</div>
+
+<script>
+(function() {
+  if (sessionStorage.getItem('userId')) window.location.href = 'dashboard.html';
+})();
+
+function showError(msg) {
+  const err = document.getElementById('error-msg');
+  err.textContent    = msg;
+  err.style.display  = 'block';
+  document.getElementById('success-msg').style.display = 'none';
+}
+function showSuccess() {
+  document.getElementById('error-msg').style.display   = 'none';
+  document.getElementById('success-msg').style.display = 'block';
+}
+
+function handleLogin() {
+  const email    = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const btn      = document.getElementById('login-btn');
+
+  document.getElementById('error-msg').style.display   = 'none';
+  document.getElementById('success-msg').style.display = 'none';
+
+  if (!email || !password) { showError('Please enter email and password.'); return; }
+
+  btn.disabled    = true;
+  btn.textContent = 'Signing in...';
+
+  fetch('/api/auth/login', {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify({ email, password })
+  })
+  .then(res => res.json())
+  .then(data => {
+      if (data.success) {
+        sessionStorage.setItem('userId',   String(data.userId));
+        sessionStorage.setItem('fullName', data.fullName || '');
+        sessionStorage.setItem('token',    data.token    || '');
+        showSuccess();
+
+        const ADMIN_EMAIL = "patilshreya2704@gmail.com";
+        setTimeout(() => {
+          if (email === ADMIN_EMAIL) {
+            window.location.href = 'admin-dashboard.html';
+          } else {
+            window.location.href = 'dashboard.html';
+          }
+        }, 800);
+      } else {
+        btn.disabled    = false;
+        btn.textContent = '🔐 Sign In Safely';
+        showError(data.message || 'Invalid email or password.');
+      }
+    })
+    .catch(() => {
+      btn.disabled    = false;
+      btn.textContent = '🔐 Sign In Safely';
+      showError('Server error. Please try again.');
+    });
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
+</script>
+
+<script src="nav.js"></script>
+</body>
+</html>
