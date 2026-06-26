@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head><title>Signing in...</title></head>
+<body>
+<script>
+  const params   = new URLSearchParams(window.location.search);
+  const userId   = params.get('userId');
+  const fullName = params.get('fullName');
+  const email    = params.get('email');
+
+  if (userId) {
+    sessionStorage.setItem('userId',   userId);
+    sessionStorage.setItem('fullName', fullName || '');
+    sessionStorage.setItem('email',    email || '');
+
+    const ADMIN_EMAIL = "patilshreya2704@gmail.com";
+    if (email === ADMIN_EMAIL) {
+      window.location.href = 'admin-dashboard.html';
+    } else {
+      window.location.href = 'dashboard.html';
+    }
+  } else {
+    window.location.href = 'login.html?error=google_failed';
+  }
+</script>
+</body>
+</html>
