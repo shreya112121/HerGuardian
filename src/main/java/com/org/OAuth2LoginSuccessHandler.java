@@ -30,7 +30,7 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
         User user = userRepository.findByEmail(email).orElseThrow();
 
-        String redirectUrl = "/oauth-success"  // .html kadha
+        String redirectUrl = "/oauth-success.html" 
                 + "?userId=" + user.getId()
                 + "&fullName=" + URLEncoder.encode(user.getFullName(), "UTF-8")
                 + "&email=" + URLEncoder.encode(email, "UTF-8");
