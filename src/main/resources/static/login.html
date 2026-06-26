@@ -128,6 +128,19 @@
 
   .emergency-strip { margin-top:2rem; padding:0.75rem 1rem; background:rgba(232,70,70,0.08); border:1px solid rgba(232,70,70,0.2); border-radius:10px; display:flex; align-items:center; justify-content:center; gap:1rem; font-size:0.8rem; color:var(--text2); flex-wrap:wrap; }
   .emergency-strip strong { color:var(--danger); }
+  .btn-google {
+    display:block; width:100%; text-align:center;
+    background:#fff; color:#444; border:1.5px solid var(--border2);
+    border-radius:30px; padding:12px; font-family:'DM Sans',sans-serif;
+    font-weight:600; font-size:0.95rem; cursor:pointer;
+    text-decoration:none; transition:all 0.2s; margin-top:0.75rem;
+    box-shadow:0 2px 8px rgba(107,33,168,0.08);
+  }
+  .btn-google:hover {
+    background:var(--surface); border-color:var(--purple);
+    box-shadow:0 4px 16px rgba(107,33,168,0.15);
+    transform:translateY(-2px);
+  }
 </style>
 </head>
 <body>
@@ -165,9 +178,15 @@
     <label>Password</label>
     <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password" />
   </div>
+  
+  <a href="/oauth2/authorization/google" class="btn-google">
+    <img src="https://developers.google.com/identity/images/g-logo.png"
+         width="20" style="vertical-align:middle; margin-right:8px;">
+    Sign in with Google
+  </a>
 
   <button class="btn-primary" id="login-btn" onclick="handleLogin()">🔐 Sign In Safely</button>
-
+ 
   <div class="divider">or</div>
   <div class="register-link">
     New to HerGuardian? <a href="register.html">Create Account</a>
@@ -219,6 +238,7 @@ function handleLogin() {
         sessionStorage.setItem('userId',   String(data.userId));
         sessionStorage.setItem('fullName', data.fullName || '');
         sessionStorage.setItem('token',    data.token    || '');
+		sessionStorage.setItem('email', email); // ← fakt hi line add kar
         showSuccess();
 
         const ADMIN_EMAIL = "patilshreya2704@gmail.com";
